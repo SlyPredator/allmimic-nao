@@ -7,7 +7,8 @@ import mujoco
 import mediapy as media
 
 ROOT = Path(__file__).resolve().parent.parent
-MODEL_PATH = ROOT / "assets" / "nao" / "nao_supermimic.xml"
+SCENE_PATH = ROOT / "assets" / "nao" / "nao_visual_scene.xml"
+MODEL_PATH = SCENE_PATH if SCENE_PATH.is_file() else ROOT / "assets" / "nao" / "nao_supermimic.xml"
 DATA_PATH = ROOT / "data" / "processed" / "nao_lafan_subset_50hz.npz"
 VIDEOS_DIR = ROOT / "videos"
 

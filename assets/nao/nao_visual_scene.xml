@@ -1,0 +1,17 @@
+<mujoco model="Nao_Visual_Scene">
+  <include file="nao_supermimic.xml"/>
+  <asset>
+    <!-- Blue checkered texture with subtle contrast and 0.05 floor reflectance -->
+    <texture name="blue_checkered" type="2d" builtin="checker" width="512" height="512" rgb1="0.22 0.38 0.65" rgb2="0.12 0.20 0.38"/>
+    <material name="floor_mat" texture="blue_checkered" texrepeat="25 25" reflectance="0.05" specular="0.3" shininess="0.2"/>
+  </asset>
+  <worldbody>
+    <!-- Studio Key Light casting shadows -->
+    <light directional="true" pos="0 0 4.5" dir="0 0 -1" diffuse="0.85 0.85 0.85" specular="0.25 0.25 0.25" castshadow="true"/>
+    <!-- Soft Fill Lights for 3D depth -->
+    <light directional="false" pos="3 2 3.5" diffuse="0.5 0.5 0.6" specular="0.1 0.1 0.1" castshadow="false"/>
+    <light directional="false" pos="-3 -2 3.5" diffuse="0.4 0.4 0.5" specular="0.1 0.1 0.1" castshadow="false"/>
+    <!-- Blue Checkered Floor Plane (group 0, visual-only, no contact forces) -->
+    <geom name="floor" type="plane" size="30 30 0.05" material="floor_mat" group="0" contype="0" conaffinity="0"/>
+  </worldbody>
+</mujoco>
