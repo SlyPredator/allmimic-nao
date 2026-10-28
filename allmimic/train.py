@@ -93,6 +93,7 @@ class TrainCfg:
     eval_every: int = 4000
     eval_clips: int = 0  # 0 = all clips
     eval_envs: int = 4096
+    tensorboard: bool = True  # log scalars to TensorBoard in cfg.out
     wall_hours: float = 1e9
     tf32: bool = True
     amp: bool = True
@@ -296,6 +297,13 @@ class Trainer:
         self.prof = {}
         os.makedirs(cfg.out, exist_ok=True)
         self.log_f = open(os.path.join(cfg.out, 'log.jsonl' if self.rank == 0 else f'log_rank{self.rank}.jsonl'), 'a')
+        self.tb_writer = None
+        if getattr(cfg, 'tensorboard', True) and self.rank == 0:
+            try:
+                from torch.utils.tensorboard import SummaryWriter
+                self.tb_writer = SummaryWriter(log_dir=cfg.out)
+            except Exception as e:
+                print(f"Warning: TensorBoard failed to initialize: {e}")
         if cfg.resume:
             self.load(cfg.resume)
 
@@ -788,6 +796,24 @@ class Trainer:
                 )
                 self.log_f.write(json.dumps(rec) + '\n')
                 self.log_f.flush()
+                if self.tb_writer is not None:
+                    it = self.it
+                    for k, v in rec.items():
+                        if isinstance(v, (int, float)):
+                            if k.startswith('img_r_'):
+                                tag = f'rewards/{k[6:]}'
+                            elif k.startswith('wm_'):
+                                tag = f'world_model/{k[3:]}'
+                            elif k.startswith('pi_'):
+                                tag = f'policy/{k[3:]}'
+                            elif k.startswith('ep_'):
+                                tag = f'train/{k[3:]}'
+                            elif k in ('img_survival', 'hours', 'iter_s', 'lr', 'v_loss', 'v_mean', 'mem_gb'):
+                                tag = f'train/{k}'
+                            else:
+                                tag = f'stats/{k}'
+                            self.tb_writer.add_scalar(tag, v, it)
+                    self.tb_writer.flush()
                 print(
                     f'it {self.it} upd {self.updates} h {rec["hours"]:.3f} iter {rec["iter_s"]:.3f}s '
                     f'ret {rec["ep_norm_return"]:.3f} len {rec["ep_len"]:.1f} term {rec["ep_term_frac"]:.3f} '
@@ -815,6 +841,8 @@ class Trainer:
             self.save(os.path.join(cfg.out, 'last.pt'))
             if cfg.eval_every and self.it % cfg.eval_every != 0:
                 self.run_eval()
+            if self.tb_writer is not None:
+                self.tb_writer.close()
             open(os.path.join(cfg.out, 'DONE'), 'w').close()
         self._barrier()
 
@@ -869,6 +897,17 @@ class Trainer:
                 )
                 + '\n'
             )
+        if self.tb_writer is not None:
+            it = self.it
+            self.tb_writer.add_scalar('eval/norm_return', res['norm_return'], it)
+            self.tb_writer.add_scalar('eval/norm_return_frame_weighted', res['norm_return_frame_weighted'], it)
+            self.tb_writer.add_scalar('eval/failed', res['failed'], it)
+            self.tb_writer.add_scalar('eval/num_clips', res['num_clips'], it)
+            if 'per_clip_norm_return' in res and hasattr(self, 'eval_clip_ids'):
+                for cid, c_ret in zip(self.eval_clip_ids, res['per_clip_norm_return']):
+                    c_name = self.lib.names[int(cid)] if int(cid) < len(self.lib.names) else f'clip_{int(cid)}'
+                    self.tb_writer.add_scalar(f'eval_clips/{c_name}', c_ret, it)
+            self.tb_writer.flush()
         print(
             f'EVAL it {self.it} h {rec["hours"]:.3f} norm_return {rec["norm_return"]:.4f} failed {rec["failed"]}/{rec["num_clips"]} ({time.time() - t0:.0f}s)',
             flush=True,
