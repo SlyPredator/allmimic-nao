@@ -66,8 +66,32 @@ class TreeKinematics:
         self.axes = torch.tensor(axes, dtype=torch.float32, device=device)
         # The root body's own offset is irrelevant: the free joint sets its pose.
 
+        # Site tracking metadata
+        self.site_names = [mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_SITE, s) for s in range(m.nsite)]
+        self.site_body = [m.site_bodyid[s] - r for s in range(m.nsite)]
+        self.site_pos = torch.tensor(np.array([m.site_pos[s] for s in range(m.nsite)]), dtype=torch.float32, device=device)
+        self.site_rot = quat_to_mat(torch.tensor(np.array([m.site_quat[s] for s in range(m.nsite)]), dtype=torch.float32)).to(device)
+
     def body_index(self, names) -> list[int]:
         return [self.body_names.index(n) for n in names]
+
+    def site_index(self, names) -> list[int]:
+        return [self.site_names.index(n) for n in names]
+
+    def forward_sites(self, P: torch.Tensor, R: torch.Tensor, site_ids: list[int] | torch.Tensor | None = None):
+        """Computes site positions (..., ns, 3) and rotations (..., ns, 3, 3) from body poses P and R."""
+        if site_ids is None:
+            site_ids = list(range(len(self.site_names)))
+        if isinstance(site_ids, torch.Tensor):
+            site_ids = site_ids.tolist()
+        bids = [self.site_body[s] for s in site_ids]
+        spos = self.site_pos[site_ids]
+        srot = self.site_rot[site_ids]
+        Pb = P.index_select(-2, torch.tensor(bids, device=P.device))
+        Rb = R.index_select(-3, torch.tensor(bids, device=R.device))
+        Ps = Pb + (Rb @ spos.unsqueeze(-1)).squeeze(-1)
+        Rs = Rb @ srot
+        return Ps, Rs
 
     def forward(
         self,
@@ -117,8 +141,8 @@ class TreeKinematics:
 
 
 class FastTreeKinematics(TreeKinematics):
-    """Same outputs as TreeKinematics, unrolled per body with closed-form rotations
-    about principal axes. Meant to be wrapped in torch.compile, which fuses it."""
+    """Same outputs as TreeKinematics, unrolled per body. Supports both principal
+    axes and arbitrary 3D joint axes (such as NAO's 45-deg HipYawPitch)."""
 
     def __init__(self, mj_model, device, root_body: int = 1):
         super().__init__(mj_model, device, root_body)
@@ -129,12 +153,15 @@ class FastTreeKinematics(TreeKinematics):
                 self.parent_list[i] = p
                 self.joint_list[i] = j
         ax = self.axes.cpu()
-        self.axis_k = [0] * self.nb
+        self.axis_k = [-1] * self.nb
+        self.axis_sign = [1.0] * self.nb
         for b in range(1, self.nb):
             k = int(ax[b].abs().argmax())
-            assert torch.allclose(ax[b].abs(), torch.nn.functional.one_hot(torch.tensor(k), 3).float())
-            assert ax[b, k] > 0
-            self.axis_k[b] = k
+            if torch.allclose(ax[b].abs(), torch.nn.functional.one_hot(torch.tensor(k), 3).float(), atol=1e-4):
+                self.axis_k[b] = k
+                self.axis_sign[b] = 1.0 if ax[b, k] > 0 else -1.0
+            else:
+                self.axis_k[b] = -1
         self.O = [self.offset_rot[b] for b in range(self.nb)]
         self.off = [self.offset_pos[b] for b in range(self.nb)]
 
@@ -156,24 +183,35 @@ class FastTreeKinematics(TreeKinematics):
         for b in range(1, self.nb):
             p, j, k = self.parent_list[b], self.joint_list[b], self.axis_k[b]
             Rp = R[p]
-            c, s = torch.cos(q[..., j]), torch.sin(q[..., j])
             O = self.O[b]
-            # A = O @ Rot_k(q): column k unchanged, the other two rotate.
-            i1, i2 = [(1, 2), (2, 0), (0, 1)][k]
-            c, s = c[..., None], s[..., None]
-            cols = [None, None, None]
-            cols[k] = O[:, k].expand(c.shape[:-1] + (3,))
-            cols[i1] = c * O[:, i1] + s * O[:, i2]
-            cols[i2] = -s * O[:, i1] + c * O[:, i2]
-            A = torch.stack(cols, dim=-1)
-            Rc = self._mm(Rp, A)
+            if k >= 0:
+                sgn = self.axis_sign[b]
+                q_val = q[..., j] * sgn if sgn != 1.0 else q[..., j]
+                c, s = torch.cos(q_val), torch.sin(q_val)
+                # A = O @ Rot_k(q): column k unchanged, the other two rotate.
+                i1, i2 = [(1, 2), (2, 0), (0, 1)][k]
+                c, s = c[..., None], s[..., None]
+                cols = [None, None, None]
+                cols[k] = O[:, k].expand(c.shape[:-1] + (3,))
+                cols[i1] = c * O[:, i1] + s * O[:, i2]
+                cols[i2] = -s * O[:, i1] + c * O[:, i2]
+                A = torch.stack(cols, dim=-1)
+                Rc = self._mm(Rp, A)
+                axis_w = Rc[..., :, k] * sgn
+            else:
+                axis = self.axes[b]
+                Rj = axis_angle_to_mat(axis * q[..., j : j + 1])
+                A = self._mm(O, Rj)
+                Rc = self._mm(Rp, A)
+                axis_w = self._mv(Rc, axis)
             Pc = P[p] + self._mv(Rp, self.off[b])
             P[b], R[b] = Pc, Rc
             if with_vel:
-                Wc = W[p] + Rc[..., :, k] * qd[..., j : j + 1]
+                Wc = W[p] + axis_w * qd[..., j : j + 1]
                 Vc = V[p] + torch.cross(W[p], Pc - P[p], dim=-1)
                 V[b], W[b] = Vc, Wc
         out = (torch.stack(P, -2), torch.stack(R, -3))
         if with_vel:
             out = out + (torch.stack(V, -2), torch.stack(W, -2))
         return out
+
