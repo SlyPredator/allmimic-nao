@@ -1,0 +1,339 @@
+<?xml version="1.0" ?>
+<mujoco model="NaoH25_SuperMimic">
+  <compiler angle="radian" meshdir="meshes/V40"/>
+  <asset>
+    <texture name="nao_tex" type="2d" file="textures/textureNAO.png"/>
+    <material name="nao_skin" texture="nao_tex" specular="0.25" shininess="0.35"/>
+    <mesh name="HeadYaw_010" content_type="model/stl" file="HeadYaw_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="HeadPitch_010" content_type="model/stl" file="HeadPitch_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LHipYawPitch_010" content_type="model/stl" file="LHipYawPitch_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LHipRoll_010" content_type="model/stl" file="LHipRoll_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LHipPitch_010" content_type="model/stl" file="LHipPitch_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LKneePitch_010" content_type="model/stl" file="LKneePitch_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LAnklePitch_010" content_type="model/stl" file="LAnklePitch_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LAnkleRoll_010" content_type="model/stl" file="LAnkleRoll_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RHipYawPitch_010" content_type="model/stl" file="RHipYawPitch_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RHipRoll_010" content_type="model/stl" file="RHipRoll_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RHipPitch_010" content_type="model/stl" file="RHipPitch_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RKneePitch_010" content_type="model/stl" file="RKneePitch_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RAnklePitch_010" content_type="model/stl" file="RAnklePitch_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RAnkleRoll_010" content_type="model/stl" file="RAnkleRoll_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="Torso_010" content_type="model/stl" file="Torso_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LShoulderPitch_010" content_type="model/stl" file="LShoulderPitch_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LShoulderRoll_010" content_type="model/stl" file="LShoulderRoll_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LElbowRoll_010" content_type="model/stl" file="LElbowRoll_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LWristYaw_010" content_type="model/stl" file="LWristYaw_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RShoulderPitch_010" content_type="model/stl" file="RShoulderPitch_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RShoulderRoll_010" content_type="model/stl" file="RShoulderRoll_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RElbowRoll_010" content_type="model/stl" file="RElbowRoll_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RWristYaw_010" content_type="model/stl" file="RWristYaw_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RFinger13_010" content_type="model/stl" file="RFinger13_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RFinger12_010" content_type="model/stl" file="RFinger12_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LFinger21_010" content_type="model/stl" file="LFinger21_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LFinger13_010" content_type="model/stl" file="LFinger13_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LFinger11_010" content_type="model/stl" file="LFinger11_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RFinger22_010" content_type="model/stl" file="RFinger22_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LFinger22_010" content_type="model/stl" file="LFinger22_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RFinger21_010" content_type="model/stl" file="RFinger21_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LFinger12_010" content_type="model/stl" file="LFinger12_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RFinger23_010" content_type="model/stl" file="RFinger23_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RFinger11_010" content_type="model/stl" file="RFinger11_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LFinger23_010" content_type="model/stl" file="LFinger23_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LThumb1_010" content_type="model/stl" file="LThumb1_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RThumb1_010" content_type="model/stl" file="RThumb1_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="RThumb2_010" content_type="model/stl" file="RThumb2_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="LThumb2_010" content_type="model/stl" file="LThumb2_010.stl" scale="0.1 0.1 0.1"/>
+    <mesh name="HeadYaw_vis" file="HeadYaw.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="HeadPitch_vis" file="HeadPitch.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LHipYawPitch_vis" file="LHipYawPitch.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LHipRoll_vis" file="LHipRoll.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LHipPitch_vis" file="LHipPitch.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LKneePitch_vis" file="LKneePitch.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LAnklePitch_vis" file="LAnklePitch.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LAnkleRoll_vis" file="LAnkleRoll.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RHipYawPitch_vis" file="RHipYawPitch.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RHipRoll_vis" file="RHipRoll.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RHipPitch_vis" file="RHipPitch.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RKneePitch_vis" file="RKneePitch.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RAnklePitch_vis" file="RAnklePitch.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RAnkleRoll_vis" file="RAnkleRoll.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="Torso_vis" file="Torso.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LShoulderPitch_vis" file="LShoulderPitch.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LShoulderRoll_vis" file="LShoulderRoll.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LElbowRoll_vis" file="LElbowRoll.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LWristYaw_vis" file="LWristYaw.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RShoulderPitch_vis" file="RShoulderPitch.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RShoulderRoll_vis" file="RShoulderRoll.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RElbowRoll_vis" file="RElbowRoll.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RWristYaw_vis" file="RWristYaw.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RFinger13_vis" file="RFinger13.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RFinger12_vis" file="RFinger12.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LFinger21_vis" file="LFinger21.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LFinger13_vis" file="LFinger13.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LFinger11_vis" file="LFinger11.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RFinger22_vis" file="RFinger22.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LFinger22_vis" file="LFinger22.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RFinger21_vis" file="RFinger21.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LFinger12_vis" file="LFinger12.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RFinger23_vis" file="RFinger23.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RFinger11_vis" file="RFinger11.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LFinger23_vis" file="LFinger23.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LThumb1_vis" file="LThumb1.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RThumb1_vis" file="RThumb1.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="RThumb2_vis" file="RThumb2.obj" scale="0.1 0.1 0.1"/>
+    <mesh name="LThumb2_vis" file="LThumb2.obj" scale="0.1 0.1 0.1"/>
+  </asset>
+  <worldbody>
+    <body name="torso" pos="0 0 0.334">
+      <freejoint name="root"/>
+      <inertial pos="-0.00413 0 0.04342" mass="1.04956" diaginertia="0.00308361 0.0028835 0.0015924"/>
+      <geom type="mesh" mesh="Torso_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+      <geom type="mesh" mesh="Torso_010" name="torso_collision" group="3"/>
+      <!-- SuperMimic Tracking Site: Torso Anchor (at Torso IMU frame) -->
+      <site name="torso_anchor" pos="0 0 0.04342"/>
+      
+      <body name="Neck" pos="0 0 0.1265">
+        <inertial pos="-1e-05 0 -0.02742" quat="0.70765 -0.00173495 0.00151894 0.706559" mass="0.07842" diaginertia="1.70396e-05 1.60324e-05 5.53348e-06"/>
+        <joint name="HeadYaw" pos="0 0 0" axis="0 0 1" range="-2.08567 2.08567" actuatorfrcrange="-1.547 1.547"/>
+        <geom type="mesh" mesh="HeadYaw_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+        <geom type="mesh" mesh="HeadYaw_010" group="3"/>
+        <body name="Head">
+          <inertial pos="-0.00111901 0 0.0525802" quat="0.463805 0.585278 -0.493056 0.446353" mass="0.60534" diaginertia="0.000990726 0.000958056 0.00081117"/>
+          <joint name="HeadPitch" pos="0 0 0" axis="0 1 0" range="-0.671952 0.514872" actuatorfrcrange="-1.532 1.532"/>
+          <geom type="mesh" mesh="HeadPitch_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+          <geom type="mesh" mesh="HeadPitch_010" group="3"/>
+          <!-- SuperMimic Tracking Site: Head Track -->
+          <site name="head_track" pos="0 0 0.05258"/>
+        </body>
+      </body>
+      
+      <body name="LPelvis" pos="0 0.05 -0.085">
+        <inertial pos="-0.00781 -0.01114 0.02661" quat="0.232303 0.656505 0.182148 0.69416" mass="0.06981" diaginertia="5.16414e-05 4.58792e-05 2.32239e-05"/>
+        <joint name="LHipYawPitch" pos="0 0 0" axis="0 0.707107 -0.707107" range="-1.14529 0.740718" actuatorfrcrange="-3.348 3.348"/>
+        <geom type="mesh" mesh="LHipYawPitch_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+        <geom type="mesh" mesh="LHipYawPitch_010" group="3"/>
+        <body name="LHip">
+          <inertial pos="-0.01549 0.00029 -0.00515" quat="0.453959 0.527953 0.574067 0.430853" mass="0.14053" diaginertia="6.08587e-05 5.59269e-05 2.22526e-05"/>
+          <joint name="LHipRoll" pos="0 0 0" axis="1 0 0" range="-0.379435 0.79046" actuatorfrcrange="-3.348 3.348"/>
+          <geom type="mesh" mesh="LHipRoll_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+          <geom type="mesh" mesh="LHipRoll_010" group="3"/>
+          <body name="LThigh">
+            <inertial pos="0.00138 0.00221 -0.05373" quat="0.992078 -0.0228023 -0.123519 -0.00190301" mass="0.38968" diaginertia="0.000524114 0.000465732 0.000286453"/>
+            <joint name="LHipPitch" pos="0 0 0" axis="0 1 0" range="-1.53589 0.48398" actuatorfrcrange="-3.023 3.023"/>
+            <geom type="mesh" mesh="LHipPitch_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+            <geom type="mesh" mesh="LHipPitch_010" group="3"/>
+            <body name="LTibia" pos="0 0 -0.1">
+              <inertial pos="0.00453 0.00225 -0.04936" quat="0.997907 0.0169027 0.0579417 0.0232071" mass="0.30142" diaginertia="0.000449928 0.000388139 0.000181704"/>
+              <joint name="LKneePitch" pos="0 0 0" axis="0 1 0" range="-0.0923279 2.11255" actuatorfrcrange="-3.023 3.023"/>
+              <geom type="mesh" mesh="LKneePitch_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+              <geom type="mesh" mesh="LKneePitch_010" group="3"/>
+              <!-- SuperMimic Tracking Site: Left Knee Track -->
+              <site name="l_knee_track" pos="0 0 0"/>
+              <body name="LAnklePitch" pos="0 0 -0.1029">
+                <inertial pos="0.00045 0.00029 0.00685" quat="0.447256 0.548803 0.537287 0.458368" mass="0.13416" diaginertia="6.79494e-05 5.56016e-05 3.14223e-05"/>
+                <joint name="LAnklePitch" pos="0 0 0" axis="0 1 0" range="-1.18944 0.922581" actuatorfrcrange="-3.023 3.023"/>
+                <geom type="mesh" mesh="LAnklePitch_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+                <geom type="mesh" mesh="LAnklePitch_010" group="3"/>
+                <body name="l_ankle">
+                  <inertial pos="0.0254185 0.00329981 -0.0323907" quat="0.0134315 0.704735 -0.00974988 0.709276" mass="0.17185" diaginertia="0.000412968 0.000353416 8.70933e-05"/>
+                  <joint name="LAnkleRoll" pos="0 0 0" axis="1 0 0" range="-0.397761 0.768992" actuatorfrcrange="-3.348 3.348"/>
+                  <geom type="mesh" mesh="LAnkleRoll_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+                  <geom type="mesh" mesh="LAnkleRoll_010" name="l_foot" friction="0.9 0.01 0.01" condim="3" group="3"/>
+                  <site name="l_sole" pos="0 0 -0.04511"/>
+                  <!-- SuperMimic Tracking Site: Left Ankle / Sole Track -->
+                  <site name="l_ankle_track" pos="0 0 -0.04511"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      
+      <body name="RPelvis" pos="0 -0.05 -0.085">
+        <inertial pos="-0.00781 0.01114 0.02661" quat="-0.286295 0.637526 -0.200888 0.686469" mass="0.06981" diaginertia="6.0003e-05 4.60859e-05 3.15895e-05"/>
+        <joint name="RHipYawPitch" pos="0 0 0" axis="0 0.707107 0.707107" range="-1.14529 0.740718" actuatorfrcrange="-3.348 3.348"/>
+        <geom type="mesh" mesh="RHipYawPitch_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+        <geom type="mesh" mesh="RHipYawPitch_010" group="3"/>
+        <body name="RHip">
+          <inertial pos="-0.01549 -0.00029 -0.00515" quat="0.431269 0.573083 0.528698 0.453941" mass="0.14053" diaginertia="6.08554e-05 5.59208e-05 2.2268e-05"/>
+          <joint name="RHipRoll" pos="0 0 0" axis="1 0 0" range="-0.79046 0.379435" actuatorfrcrange="-3.348 3.348"/>
+          <geom type="mesh" mesh="RHipRoll_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+          <geom type="mesh" mesh="RHipRoll_010" group="3"/>
+          <body name="RThigh">
+            <inertial pos="0.00138 -0.00221 -0.05373" quat="0.99203 0.0205489 -0.124311 0.000726212" mass="0.38968" diaginertia="0.000525121 0.000466802 0.000286518"/>
+            <joint name="RHipPitch" pos="0 0 0" axis="0 1 0" range="-1.53589 0.48398" actuatorfrcrange="-3.0226 3.0226"/>
+            <geom type="mesh" mesh="RHipPitch_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+            <geom type="mesh" mesh="RHipPitch_010" group="3"/>
+            <body name="RTibia" pos="0 0 -0.1">
+              <inertial pos="0.00453 -0.00225 -0.04936" quat="0.99698 -0.0149083 0.0724691 -0.0235809" mass="0.30142" diaginertia="0.000452851 0.000387699 0.000177824"/>
+              <joint name="RKneePitch" pos="0 0 0" axis="0 1 0" range="-0.0923279 2.11255" actuatorfrcrange="-3.0226 3.0226"/>
+              <geom type="mesh" mesh="RKneePitch_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+              <geom type="mesh" mesh="RKneePitch_010" group="3"/>
+              <!-- SuperMimic Tracking Site: Right Knee Track -->
+              <site name="r_knee_track" pos="0 0 0"/>
+              <body name="RAnklePitch" pos="0 0 -0.1029">
+                <inertial pos="0.00045 -0.00029 0.00685" quat="0.458219 0.537985 0.54818 0.447332" mass="0.13416" diaginertia="6.79942e-05 5.56532e-05 3.14175e-05"/>
+                <joint name="RAnklePitch" pos="0 0 0" axis="0 1 0" range="-1.1863 0.932006" actuatorfrcrange="-3.0226 3.0226"/>
+                <geom type="mesh" mesh="RAnklePitch_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+                <geom type="mesh" mesh="RAnklePitch_010" group="3"/>
+                <body name="r_ankle">
+                  <inertial pos="0.0254185 -0.00329981 -0.0323907" quat="-0.0138289 0.70447 0.00894779 0.709543" mass="0.17185" diaginertia="0.000412252 0.000352536 8.69609e-05"/>
+                  <joint name="RAnkleRoll" pos="0 0 0" axis="1 0 0" range="-0.768992 0.397761" actuatorfrcrange="-3.348 3.348"/>
+                  <geom type="mesh" mesh="RAnkleRoll_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+                  <geom type="mesh" mesh="RAnkleRoll_010" name="r_foot" friction="0.9 0.01 0.01" condim="3" group="3"/>
+                  <site name="r_sole" pos="0 0 -0.04511"/>
+                  <!-- SuperMimic Tracking Site: Right Ankle / Sole Track -->
+                  <site name="r_ankle_track" pos="0 0 -0.04511"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      
+      <body name="LShoulder" pos="0 0.098 0.1">
+        <inertial pos="-0.00165 -0.02663 0.00014" quat="0.353499 0.572853 -0.442525 0.592494" mass="0.09304" diaginertia="2.02186e-05 1.91002e-05 1.30704e-05"/>
+        <joint name="LShoulderPitch" pos="0 0 0" axis="0 1 0" range="-2.08567 2.08567" actuatorfrcrange="-1.329 1.329"/>
+        <geom type="mesh" mesh="LShoulderPitch_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+        <geom type="mesh" mesh="LShoulderPitch_010" group="3"/>
+        <body name="LBicep">
+          <inertial pos="0.02455 0.00563 0.0033" quat="0.467645 0.46185 0.492756 0.570257" mass="0.15777" diaginertia="0.00027823 0.000242894 8.25818e-05"/>
+          <joint name="LShoulderRoll" pos="0 0 0" axis="0 0 1" range="-0.314159 1.32645" actuatorfrcrange="-1.7835 1.7835"/>
+          <geom type="mesh" mesh="LShoulderRoll_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+          <geom type="mesh" mesh="LShoulderRoll_010" group="3"/>
+          <body name="LElbow" pos="0.105 0.015 0">
+            <inertial pos="-0.02744 0 -0.00014" quat="-0.000545392 0.711779 -0.000696018 0.702403" mass="0.06483" diaginertia="2.76333e-05 2.66179e-05 5.592e-06"/>
+            <joint name="LElbowYaw" pos="0 0 0" axis="1 0 0" range="-2.08567 2.08567" actuatorfrcrange="-1.547 1.547"/>
+            <body name="LForeArm">
+              <inertial pos="0.02556 0.00281 0.00076" quat="0.481839 0.619088 0.422287 0.454131" mass="0.07761" diaginertia="3.9183e-05 3.6083e-05 2.37632e-05"/>
+              <joint name="LElbowRoll" pos="0 0 0" axis="0 0 1" range="-1.54462 -0.0349066" actuatorfrcrange="-1.532 1.532"/>
+              <geom type="mesh" mesh="LElbowRoll_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+              <geom type="mesh" mesh="LElbowRoll_010" group="3"/>
+              <!-- SuperMimic Tracking Site: Left Elbow Track -->
+              <site name="l_elbow_track" pos="0 0 0"/>
+              <body name="l_wrist" pos="0.05595 0 0">
+                <inertial pos="0.0343429 -0.000879924 0.00307817" quat="0.346669 0.607665 0.329523 0.634017" mass="0.185346" diaginertia="0.000137517 0.000131662 6.85403e-05"/>
+                <joint name="LWristYaw" pos="0 0 0" axis="1 0 0" range="-1.82387 1.82387" actuatorfrcrange="-0.4075 0.4075"/>
+                <geom type="mesh" mesh="LWristYaw_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+                <geom type="mesh" mesh="LWristYaw_010" group="3"/>
+                <!-- Rigid Visual Mesh Attachments for Left Hand (No Finger Joints) -->
+                <geom type="mesh" mesh="LFinger21_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.06907 -0.01157 -0.00304" quat="0.672286 0.564114 0.308141 -0.367227"/>
+                <geom pos="0.06907 -0.01157 -0.00304" quat="0.672286 0.564114 0.308141 -0.367227" type="mesh" mesh="LFinger21_010" group="3"/>
+                <geom type="mesh" mesh="LFinger22_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.07683 -0.0136681 -0.0149392" quat="0.413961 0.347354 0.540852 -0.644562"/>
+                <geom pos="0.07683 -0.0136681 -0.0149392" quat="0.413961 0.347354 0.540852 -0.644562" type="mesh" mesh="LFinger22_010" group="3"/>
+                <geom type="mesh" mesh="LFinger23_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.0708567 -0.0159358 -0.0277995" quat="0.0543039 0.0455657 0.64117 -0.764117"/>
+                <geom pos="0.0708567 -0.0159358 -0.0277995" quat="0.0543039 0.0455657 0.64117 -0.764117" type="mesh" mesh="LFinger23_010" group="3"/>
+                <geom type="mesh" mesh="LFinger11_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.06907 0.01157 -0.00304" quat="0.564115 0.672285 0.367228 -0.30814"/>
+                <geom pos="0.06907 0.01157 -0.00304" quat="0.564115 0.672285 0.367228 -0.30814" type="mesh" mesh="LFinger11_010" group="3"/>
+                <geom type="mesh" mesh="LFinger12_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.07683 0.0136681 -0.0149392" quat="0.347355 0.41396 0.644562 -0.540852"/>
+                <geom pos="0.07683 0.0136681 -0.0149392" quat="0.347355 0.41396 0.644562 -0.540852" type="mesh" mesh="LFinger12_010" group="3"/>
+                <geom type="mesh" mesh="LFinger13_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.0708567 0.0159358 -0.0277995" quat="0.0455666 0.0543032 0.764117 -0.641171"/>
+                <geom pos="0.0708567 0.0159358 -0.0277995" quat="0.0455666 0.0543032 0.764117 -0.641171" type="mesh" mesh="LFinger13_010" group="3"/>
+                <geom type="mesh" mesh="LThumb1_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.04895 0 -0.02638" quat="0.706908 -0.70691 0.0167209 0.016721"/>
+                <geom pos="0.04895 0 -0.02638" quat="0.706908 -0.70691 0.0167209 0.016721" type="mesh" mesh="LThumb1_010" group="3"/>
+                <geom type="mesh" mesh="LThumb2_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.0632939 -4.68797e-10 -0.027059" quat="0.628403 -0.628405 -0.324205 -0.324204"/>
+                <geom pos="0.0632939 -4.68797e-10 -0.027059" quat="0.628403 -0.628405 -0.324205 -0.324204" type="mesh" mesh="LThumb2_010" group="3"/>
+                <!-- SuperMimic Tracking Site: Left Palm Center (+0.058m along wrist axis) -->
+                <site name="l_hand_track" pos="0.058 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      
+      <body name="RShoulder" pos="0 -0.098 0.1">
+        <inertial pos="-0.00165 0.02663 0.00014" quat="0.572853 0.353499 -0.592494 0.442525" mass="0.09304" diaginertia="2.02186e-05 1.91002e-05 1.30704e-05"/>
+        <joint name="RShoulderPitch" pos="0 0 0" axis="0 1 0" range="-2.08567 2.08567" actuatorfrcrange="-1.329 1.329"/>
+        <geom type="mesh" mesh="RShoulderPitch_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+        <geom type="mesh" mesh="RShoulderPitch_010" group="3"/>
+        <body name="RBicep">
+          <inertial pos="0.02455 -0.00563 0.0033" quat="0.556969 0.570609 0.359404 0.484788" mass="0.15777" diaginertia="0.000287934 0.00025515 8.56154e-05"/>
+          <joint name="RShoulderRoll" pos="0 0 0" axis="0 0 1" range="-1.32645 0.314159" actuatorfrcrange="-1.783 1.783"/>
+          <geom type="mesh" mesh="RShoulderRoll_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+          <geom type="mesh" mesh="RShoulderRoll_010" group="3"/>
+          <body name="RElbow" pos="0.105 -0.015 0">
+            <inertial pos="-0.02744 0 -0.00014" quat="-0.000545392 0.711779 -0.000696018 0.702403" mass="0.06483" diaginertia="2.76333e-05 2.66179e-05 5.592e-06"/>
+            <joint name="RElbowYaw" pos="0 0 0" axis="1 0 0" range="-2.08567 2.08567" actuatorfrcrange="-1.547 1.547"/>
+            <body name="RForeArm">
+              <inertial pos="0.02556 -0.00281 0.00076" quat="0.453039 0.428011 0.593606 0.509111" mass="0.07761" diaginertia="3.92326e-05 3.59586e-05 2.39457e-05"/>
+              <joint name="RElbowRoll" pos="0 0 0" axis="0 0 1" range="0.0349066 1.54462" actuatorfrcrange="-1.532 1.532"/>
+              <geom type="mesh" mesh="RElbowRoll_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+              <geom type="mesh" mesh="RElbowRoll_010" group="3"/>
+              <!-- SuperMimic Tracking Site: Right Elbow Track -->
+              <site name="r_elbow_track" pos="0 0 0"/>
+              <body name="r_wrist" pos="0.05595 0 0">
+                <inertial pos="0.0343429 0.000879924 0.00307817" quat="0.42247 0.617994 0.303975 0.589239" mass="0.185346" diaginertia="0.000139344 0.00013174 6.66351e-05"/>
+                <joint name="RWristYaw" pos="0 0 0" axis="1 0 0" range="-1.82387 1.82387" actuatorfrcrange="-0.4075 0.4075"/>
+                <geom type="mesh" mesh="RWristYaw_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
+                <geom type="mesh" mesh="RWristYaw_010" group="3"/>
+                <!-- Rigid Visual Mesh Attachments for Right Hand (No Finger Joints) -->
+                <geom type="mesh" mesh="RFinger21_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.06907 -0.01157 -0.00304" quat="0.672286 0.564114 0.308141 -0.367227"/>
+                <geom pos="0.06907 -0.01157 -0.00304" quat="0.672286 0.564114 0.308141 -0.367227" type="mesh" mesh="RFinger21_010" group="3"/>
+                <geom type="mesh" mesh="RFinger22_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.07683 -0.0136681 -0.0149392" quat="0.413961 0.347354 0.540852 -0.644562"/>
+                <geom pos="0.07683 -0.0136681 -0.0149392" quat="0.413961 0.347354 0.540852 -0.644562" type="mesh" mesh="RFinger22_010" group="3"/>
+                <geom type="mesh" mesh="RFinger23_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.0708567 -0.0159358 -0.0277995" quat="0.0543039 0.0455657 0.64117 -0.764117"/>
+                <geom pos="0.0708567 -0.0159358 -0.0277995" quat="0.0543039 0.0455657 0.64117 -0.764117" type="mesh" mesh="RFinger23_010" group="3"/>
+                <geom type="mesh" mesh="RFinger11_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.06907 0.01157 -0.00304" quat="0.564115 0.672285 0.367228 -0.30814"/>
+                <geom pos="0.06907 0.01157 -0.00304" quat="0.564115 0.672285 0.367228 -0.30814" type="mesh" mesh="RFinger11_010" group="3"/>
+                <geom type="mesh" mesh="RFinger12_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.07683 0.0136681 -0.0149392" quat="0.347355 0.41396 0.644562 -0.540852"/>
+                <geom pos="0.07683 0.0136681 -0.0149392" quat="0.347355 0.41396 0.644562 -0.540852" type="mesh" mesh="RFinger12_010" group="3"/>
+                <geom type="mesh" mesh="RFinger13_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.0708567 0.0159358 -0.0277995" quat="0.0455666 0.0543032 0.764117 -0.641171"/>
+                <geom pos="0.0708567 0.0159358 -0.0277995" quat="0.0455666 0.0543032 0.764117 -0.641171" type="mesh" mesh="RFinger13_010" group="3"/>
+                <geom type="mesh" mesh="RThumb1_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.04895 0 -0.02638" quat="0.706908 -0.70691 0.0167209 0.016721"/>
+                <geom pos="0.04895 0 -0.02638" quat="0.706908 -0.70691 0.0167209 0.016721" type="mesh" mesh="RThumb1_010" group="3"/>
+                <geom type="mesh" mesh="RThumb2_vis" material="nao_skin" group="2" contype="0" conaffinity="0" pos="0.0632939 -4.68797e-10 -0.027059" quat="0.628403 -0.628405 -0.324205 -0.324204"/>
+                <geom pos="0.0632939 -4.68797e-10 -0.027059" quat="0.628403 -0.628405 -0.324205 -0.324204" type="mesh" mesh="RThumb2_010" group="3"/>
+                <!-- SuperMimic Tracking Site: Right Palm Center (+0.058m along wrist axis) -->
+                <site name="r_hand_track" pos="0.058 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <site name="imu" pos="0 0 0.04342"/>
+    </body>
+  </worldbody>
+  
+  <equality>
+    <!-- Stiff Pelvis Equality Coupling Constraint for MuJoCo Warp / SuperMimic -->
+    <joint joint1="LHipYawPitch" joint2="RHipYawPitch" polycoef="0 1 0 0 0" solimp="0.99 0.999 0.001" solref="0.004 1"/>
+  </equality>
+
+  <actuator>
+    <motor name="HeadYaw_motor" joint="HeadYaw" gear="1" ctrllimited="true" ctrlrange="-1.547 1.547"/>
+    <motor name="HeadPitch_motor" joint="HeadPitch" gear="1" ctrllimited="true" ctrlrange="-1.532 1.532"/>
+    <motor name="LHipYawPitch_motor" joint="LHipYawPitch" gear="1" ctrllimited="true" ctrlrange="-3.348 3.348"/>
+    <motor name="LHipRoll_motor" joint="LHipRoll" gear="1" ctrllimited="true" ctrlrange="-3.348 3.348"/>
+    <motor name="LHipPitch_motor" joint="LHipPitch" gear="1" ctrllimited="true" ctrlrange="-3.023 3.023"/>
+    <motor name="LKneePitch_motor" joint="LKneePitch" gear="1" ctrllimited="true" ctrlrange="-3.023 3.023"/>
+    <motor name="LAnklePitch_motor" joint="LAnklePitch" gear="1" ctrllimited="true" ctrlrange="-3.023 3.023"/>
+    <motor name="LAnkleRoll_motor" joint="LAnkleRoll" gear="1" ctrllimited="true" ctrlrange="-3.348 3.348"/>
+    <motor name="RHipYawPitch_motor" joint="RHipYawPitch" gear="1" ctrllimited="true" ctrlrange="-3.348 3.348"/>
+    <motor name="RHipRoll_motor" joint="RHipRoll" gear="1" ctrllimited="true" ctrlrange="-3.348 3.348"/>
+    <motor name="RHipPitch_motor" joint="RHipPitch" gear="1" ctrllimited="true" ctrlrange="-3.0226 3.0226"/>
+    <motor name="RKneePitch_motor" joint="RKneePitch" gear="1" ctrllimited="true" ctrlrange="-3.0226 3.0226"/>
+    <motor name="RAnklePitch_motor" joint="RAnklePitch" gear="1" ctrllimited="true" ctrlrange="-3.0226 3.0226"/>
+    <motor name="RAnkleRoll_motor" joint="RAnkleRoll" gear="1" ctrllimited="true" ctrlrange="-3.348 3.348"/>
+    <motor name="LShoulderPitch_motor" joint="LShoulderPitch" gear="1" ctrllimited="true" ctrlrange="-1.329 1.329"/>
+    <motor name="LShoulderRoll_motor" joint="LShoulderRoll" gear="1" ctrllimited="true" ctrlrange="-1.7835 1.7835"/>
+    <motor name="LElbowYaw_motor" joint="LElbowYaw" gear="1" ctrllimited="true" ctrlrange="-1.547 1.547"/>
+    <motor name="LElbowRoll_motor" joint="LElbowRoll" gear="1" ctrllimited="true" ctrlrange="-1.532 1.532"/>
+    <motor name="LWristYaw_motor" joint="LWristYaw" gear="1" ctrllimited="true" ctrlrange="-0.4075 0.4075"/>
+    <motor name="RShoulderPitch_motor" joint="RShoulderPitch" gear="1" ctrllimited="true" ctrlrange="-1.329 1.329"/>
+    <motor name="RShoulderRoll_motor" joint="RShoulderRoll" gear="1" ctrllimited="true" ctrlrange="-1.783 1.783"/>
+    <motor name="RElbowYaw_motor" joint="RElbowYaw" gear="1" ctrllimited="true" ctrlrange="-1.547 1.547"/>
+    <motor name="RElbowRoll_motor" joint="RElbowRoll" gear="1" ctrllimited="true" ctrlrange="-1.532 1.532"/>
+    <motor name="RWristYaw_motor" joint="RWristYaw" gear="1" ctrllimited="true" ctrlrange="-0.4075 0.4075"/>
+  </actuator>
+  
+  <sensor>
+    <gyro name="imu_ang_vel" site="imu"/>
+    <velocimeter name="imu_lin_vel" site="imu"/>
+    <framequat name="imu_orientation" objtype="site" objname="imu"/>
+    <framepos name="base_position" objtype="site" objname="imu"/>
+    <framelinvel name="base_lin_vel" objtype="site" objname="imu"/>
+    <frameangvel name="base_ang_vel" objtype="site" objname="imu"/>
+    <force name="contact_force_left" site="l_sole"/>
+    <force name="contact_force_right" site="r_sole"/>
+  </sensor>
+</mujoco>
