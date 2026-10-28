@@ -35,26 +35,39 @@ from .rotations import (
 )
 
 TRACKED_BODIES = (
-    'pelvis',
-    'left_hip_roll_link',
-    'left_knee_link',
-    'left_ankle_roll_link',
-    'right_hip_roll_link',
-    'right_knee_link',
-    'right_ankle_roll_link',
-    'torso_link',
-    'left_shoulder_roll_link',
-    'left_elbow_link',
-    'left_wrist_yaw_link',
-    'right_shoulder_roll_link',
-    'right_elbow_link',
-    'right_wrist_yaw_link',
+    'torso',
+    'Head',
+    'l_ankle',
+    'r_ankle',
+    'LTibia',
+    'RTibia',
+    'l_wrist',
+    'r_wrist',
+    'LForeArm',
+    'RForeArm',
 )
 
-NJ = 29
-OBS_DIM = NJ + NJ + 3 + 3 + NJ  # 93
-GOAL_FRAME_DIM = 3 + 6 + NJ + NJ + 3 + 3  # 73
-XI_DIM = 1 + NJ + 3
+NJ = 24
+NU = 23
+OBS_DIM = NJ + NJ + 3 + 3 + NU  # 77: q(24) + qd(24) + gyro(3) + grav(3) + prev_action(23)
+GOAL_FRAME_DIM = 3 + 6 + NJ + NJ + 3 + 3  # 63
+XI_DIM = 1 + NJ + 3  # 28
+
+
+def expand_actions(a: torch.Tensor) -> torch.Tensor:
+    """Expands policy actions (..., 23) to joint space (..., 24), mapping hyp channel to both hips."""
+    if a.shape[-1] == NJ:
+        return a
+    return torch.cat(
+        [
+            a[..., :3],  # 0: HeadYaw, 1: HeadPitch, 2: LHipYawPitch
+            a[..., 3:8],  # 3..7: LHipRoll, LHipPitch, LKneePitch, LAnklePitch, LAnkleRoll
+            a[..., 2:3],  # 8: RHipYawPitch (shared coupled channel from action 2)
+            a[..., 8:13],  # 9..13: RHipRoll, RHipPitch, RKneePitch, RAnklePitch, RAnkleRoll
+            a[..., 13:],  # 14..23: Arms (5 left + 5 right)
+        ],
+        dim=-1,
+    )
 
 
 @dataclass
@@ -72,28 +85,23 @@ class TaskCfg:
     # "res" = residual on the next reference frame, q_sp = q_ref(t+1) + res_scale * action_scale * a (SuperTrack,
     # CHANGES #11). Simulator, world model and replay always use the absolute setpoint (setpoint_action), so the learned
     # dynamics never depend on the reference; reward action rate and the obs history use the policy output.
-    action: str = 'abs'
-    res_scale: float = 1.0
-    # Residual per joint group (CHANGES #20: joint-space residual targets on the legs fight root balance; all-residual
-    # policies fell more on out-of-distribution dance and yoga): legs = hip / knee / ankle joints. res_legs "res" (all
-    # residual) or "abs" (legs absolute around q0, upper body residual); res_scale_legs > 0 gives the legs their own
-    # residual scale (0 = res_scale).
-    res_legs: str = 'res'
+    action: str = 'res'
+    res_scale: float = 0.35
+    # Residual per joint group: legs = hip / knee / ankle joints. res_legs "res" (all residual) or "abs"
+    # (legs absolute around q0, upper body residual).
+    res_legs: str = 'abs'
     res_scale_legs: float = 0.0
     # Heading frame of goal / WM features / WM state deltas: "xaxis" (upstream) or "twist" (CHANGES #14); the reward's
     # yaw alignment is BeyondMimic's definition and does not change. Global (rotations.HEADING), set by Task.
     heading: str = 'xaxis'
-    # Orientation inputs: "6d" (upstream) or "tripoint" (tri-point markers, CHANGES #18: root pose as 3 points
-    # origin + R @ ref_m; goal / privileged goal: [dp 3 + 6D 6] -> 9 markers, same size; WM / critic state features:
-    # [height 1 + 6D 6] -> 9 markers around (0, 0, height)). Inputs only; the WM still predicts axis-angle deltas.
+    # Orientation inputs: "6d" (upstream) or "tripoint" (tri-point markers, CHANGES #18).
     rot_repr: str = '6d'
     dt: float = 0.02
     history: int = 10
     future: int = 10
-    # Goal frames as offsets from the current frame (empty = 1..future, upstream). CHANGES #12: a sparse, longer window
-    # with the same frame count, e.g. (1, 2, 3, 4, 6, 10, 15, 25, 40, 60) = 1.2 s instead of 0.2 s.
+    # Goal frames as offsets from the current frame (empty = 1..future).
     future_offsets: tuple = ()
-    # Reward (BeyondMimic, no self-collision term, joint-limit weight -2).
+    # Reward (BeyondMimic, scaled for NAO's 0.58m scale: std_body_pos=0.08m, std_root_pos=0.08m).
     w_body_pos: float = 1.0
     w_body_ori: float = 1.0
     w_body_lin: float = 1.0
@@ -102,15 +110,15 @@ class TaskCfg:
     w_root_ori: float = 0.5
     w_action_rate: float = -0.1
     w_joint_limit: float = -2.0
-    w_residual: float = 0.0  # x sum of squared residual outputs (CHANGES #26: bounds the residual's authority)
-    std_body_pos: float = 0.3
+    w_residual: float = 0.0
+    std_body_pos: float = 0.08
     std_body_ori: float = 0.4
     std_body_lin: float = 1.0
     std_body_ang: float = 3.14
-    std_root_pos: float = 0.3
+    std_root_pos: float = 0.08
     std_root_ori: float = 0.4
-    # Termination.
-    term_z: float = 0.25
+    # Termination (NAO nominal torso height ~0.33-0.42m -> term_z=0.18m).
+    term_z: float = 0.18
     term_tilt: float = 0.8
     soft_temp_z: float = 0.02
     soft_temp_tilt: float = 0.04
@@ -157,10 +165,10 @@ def flat_to_state(x: torch.Tensor) -> dict:
     return {
         'pos': x[..., 0:3],
         'rot': quat_to_mat(x[..., 3:7]),
-        'q': x[..., 7:36],
-        'v': x[..., 36:39],
-        'w': x[..., 39:42],
-        'qd': x[..., 42:71],
+        'q': x[..., 7 : 7 + NJ],
+        'v': x[..., 7 + NJ : 10 + NJ],
+        'w': x[..., 10 + NJ : 13 + NJ],
+        'qd': x[..., 13 + NJ : 13 + NJ + NJ],
     }
 
 
@@ -186,14 +194,14 @@ class Task:
         self.action_scale = action_scale.to(device)
         self.set_joint_names(None)
         self.tracked = torch.tensor(kin.body_index(TRACKED_BODIES), device=device)
-        self.root = 0  # pelvis
+        self.root = 0  # torso
         self.obs_noise = torch.cat(
             [
                 torch.full((NJ,), cfg.noise_q),
                 torch.full((NJ,), cfg.noise_qd),
                 torch.full((3,), cfg.noise_gyro),
                 torch.full((3,), cfg.noise_grav),
-                torch.zeros(NJ),
+                torch.zeros(NU),
             ]
         ).to(device)
         self.gravity = torch.tensor([0.0, 0.0, -1.0], device=device)
@@ -208,7 +216,13 @@ class Task:
     def obs_clean(self, s: dict, prev_action: torch.Tensor, enc_bias: torch.Tensor) -> torch.Tensor:
         gyro = mtv(s['rot'], s['w'])
         grav = mtv(s['rot'], self.gravity.expand_as(s['w']))
-        return torch.cat([s['q'] - self.q0 + enc_bias, s['qd'], gyro, grav, prev_action], dim=-1)
+        # Ensure prev_action has NU channels for observation
+        if prev_action.shape[-1] == NJ:
+            # Drop coupled duplicate index 8
+            prev_act = torch.cat([prev_action[..., :8], prev_action[..., 9:]], dim=-1)
+        else:
+            prev_act = prev_action
+        return torch.cat([s['q'] - self.q0 + enc_bias, s['qd'], gyro, grav, prev_act], dim=-1)
 
     def sample_obs_noise(self, shape) -> torch.Tensor:
         return (torch.rand(shape + (OBS_DIM,), device=self.device) * 2 - 1) * self.obs_noise
@@ -219,7 +233,7 @@ class Task:
         """joint names in action order (TrackingSimEnv calls this; None = no groups) -> per-joint residual scale and
         reference weight for setpoint_action"""
         c, n = self.cfg, len(self.q0)
-        legs = torch.tensor([any(k in nm for k in ('hip', 'knee', 'ankle')) for nm in names]) if names else None
+        legs = torch.tensor([any(k in nm.lower() for k in ('hip', 'knee', 'ankle')) for nm in names]) if names else None
         self.res_w = torch.full((n,), float(c.res_scale), device=self.q0.device)
         self.res_ref = torch.ones(n, device=self.q0.device)
         if legs is not None and c.res_legs == 'abs':
@@ -230,13 +244,14 @@ class Task:
             raise ValueError(f'unknown res_legs {c.res_legs!r}')
 
     def setpoint_action(self, a, q_ref_next):
-        """(B,29) policy output, (B,29) next reference frame joint positions -> (B,29) absolute action a_sp,
+        """(B,23 or 24) policy output, (B,24) next reference frame joint positions -> (B,24) absolute action a_sp,
         q_sp = q0 + action_scale * a_sp (what the simulator, the world model and the replay buffer use)"""
+        a_exp = expand_actions(a)
         if self.cfg.action == 'abs':
-            return a
+            return a_exp
         if self.cfg.action != 'res':
             raise ValueError(f'unknown action {self.cfg.action!r}')
-        return self.res_w * a + self.res_ref * ((q_ref_next - self.q0) / self.action_scale)
+        return self.res_w * a_exp + self.res_ref * ((q_ref_next - self.q0) / self.action_scale)
 
     # Goal: K future reference frames, expressed relative to the robot root.
 
@@ -340,6 +355,13 @@ class Task:
         e_ang = ((rW - W) ** 2).sum(-1).mean(-1)
         e_rpos = ((rpa - pa) ** 2).sum(-1)
         e_rori = (mat_to_axis_angle(mmt(rRa, Ra)) ** 2).sum(-1)
+        act_diff = action
+        prev_diff = prev_action
+        if act_diff.shape[-1] != prev_diff.shape[-1]:
+            if act_diff.shape[-1] == NU and prev_diff.shape[-1] == NJ:
+                prev_diff = torch.cat([prev_diff[..., :8], prev_diff[..., 9:]], dim=-1)
+            elif act_diff.shape[-1] == NJ and prev_diff.shape[-1] == NU:
+                act_diff = torch.cat([act_diff[..., :8], act_diff[..., 9:]], dim=-1)
         terms = {
             'body_pos': c.w_body_pos * torch.exp(-e_pos / c.std_body_pos**2),
             'body_ori': c.w_body_ori * torch.exp(-e_ori / c.std_body_ori**2),
@@ -347,13 +369,14 @@ class Task:
             'body_ang': c.w_body_ang * torch.exp(-e_ang / c.std_body_ang**2),
             'root_pos': c.w_root_pos * torch.exp(-e_rpos / c.std_root_pos**2),
             'root_ori': c.w_root_ori * torch.exp(-e_rori / c.std_root_ori**2),
-            'action_rate': c.w_action_rate * ((action - prev_action) ** 2).sum(-1),
+            'action_rate': c.w_action_rate * ((act_diff - prev_diff) ** 2).sum(-1),
             'joint_limit': c.w_joint_limit * (torch.relu(s['q'] - self.qmax) + torch.relu(self.qmin - s['q'])).sum(-1),
         }
         if (
             c.w_residual and c.action == 'res'
         ):  # residual joints only (res_ref = 1): legs-absolute outputs are not residuals
-            terms['residual'] = c.w_residual * (action**2 * self.res_ref).sum(-1)
+            act_exp = expand_actions(action)
+            terms['residual'] = c.w_residual * (act_exp**2 * self.res_ref).sum(-1)
         r = sum(terms.values()) * c.dt
         return r, terms
 
@@ -389,7 +412,11 @@ class Task:
     def _maybe_compiled(self, name, fn, *args):
         if args[0]['pos'].shape[0] in self.compile_sizes:
             if name not in self._compiled:
-                self._compiled[name] = torch.compile(fn, dynamic=False)
+                try:
+                    import triton  # noqa: F401
+                    self._compiled[name] = torch.compile(fn, dynamic=False)
+                except Exception:
+                    self._compiled[name] = fn
             return self._compiled[name](*args)
         return fn(*args)
 

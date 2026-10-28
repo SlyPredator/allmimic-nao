@@ -22,13 +22,14 @@ from mjlab.terrains import TerrainEntityCfg
 from .kinematics import FastTreeKinematics
 from .motion_lib import MotionLibrary
 from .rotations import quat_from_euler_xyz, quat_mul, quat_normalize, quat_to_mat
-from .task import NJ, OBS_DIM, XI_DIM, Task, TaskCfg
+from .task import NJ, NU, OBS_DIM, XI_DIM, Task, TaskCfg
 
 FOOT_GEOM_RE = r'^(left|right)_foot[1-7]_collision$'
 
 
 @dataclass
 class EnvCfg:
+    robot_type: str = 'nao'
     num_envs: int = 4096
     episode_length_s: float = 10.0
     domain_rand: bool = True
@@ -98,10 +99,29 @@ class TrackingSimEnv:
         self.device = device
         self.num_envs = n = cfg.num_envs
         self.gamma = gamma
+        if cfg.robot_type == 'nao':
+            from .nao_config import (
+                NAO_ACTION_SCALE,
+                NAO_FOOT_GEOM_RE,
+                NAO_ROOT_BODY,
+                get_nao_supermimic_robot_cfg,
+            )
+            robot_cfg = get_nao_supermimic_robot_cfg()
+            action_scale_dict = NAO_ACTION_SCALE
+            root_body_name = NAO_ROOT_BODY
+            foot_geom_re = NAO_FOOT_GEOM_RE
+            expected_feet = 2
+        else:
+            robot_cfg = get_g1_robot_cfg()
+            action_scale_dict = G1_ACTION_SCALE
+            root_body_name = 'pelvis'
+            foot_geom_re = FOOT_GEOM_RE
+            expected_feet = 14
+
         scene_cfg = SceneCfg(
             terrain=TerrainEntityCfg(terrain_type='plane'),
             num_envs=n,
-            entities={'robot': get_g1_robot_cfg()},
+            entities={'robot': robot_cfg},
         )
         self.scene = Scene(scene_cfg, device=device)
         sim_cfg = SimulationCfg(
@@ -117,9 +137,16 @@ class TrackingSimEnv:
         self.decimation = 4
 
         # Robot-only kinematic tree (the scene adds a prefix to names).
-        root_body = self._find_body('pelvis')
+        root_body = self._find_body(root_body_name)
         self.kin = FastTreeKinematics(m, device, root_body=root_body)
-        self.kin_c = torch.compile(self.kin.forward, dynamic=False) if cfg.compile else self.kin.forward
+        if cfg.compile:
+            try:
+                import triton  # noqa: F401
+                self.kin_c = torch.compile(self.kin.forward, dynamic=False)
+            except Exception:
+                self.kin_c = self.kin.forward
+        else:
+            self.kin_c = self.kin.forward
         self.root_qadr = m.jnt_qposadr[m.body_jntadr[root_body]]
         self.root_vadr = m.jnt_dofadr[m.body_jntadr[root_body]]
         hinge_ids = [m.body_jntadr[root_body + 1 + i] for i in range(NJ)]
@@ -142,7 +169,7 @@ class TrackingSimEnv:
         import re
 
         for k, nm in enumerate(self.joint_names):
-            for pat, val in G1_ACTION_SCALE.items():
+            for pat, val in action_scale_dict.items():
                 if re.fullmatch(pat, nm):
                     scale[k] = val
         assert (scale > 0).all()
@@ -155,11 +182,14 @@ class TrackingSimEnv:
 
         # Domain randomization fields.
         self.foot_geoms = torch.tensor(
-            [g for g in range(m.ngeom) if _match(FOOT_GEOM_RE, mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_GEOM, g))],
+            [g for g in range(m.ngeom) if _match(foot_geom_re, mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_GEOM, g))],
             device=device,
         )
-        assert len(self.foot_geoms) == 14, len(self.foot_geoms)
-        self.torso_body = self._find_body('torso_link')
+        assert len(self.foot_geoms) == expected_feet, len(self.foot_geoms)
+        try:
+            self.torso_body = self._find_body('torso_link')
+        except KeyError:
+            self.torso_body = self._find_body('torso')
         if cfg.domain_rand:
             self.sim.expand_model_fields(('geom_friction', 'body_ipos'))
         self.default_torso_ipos = torch.tensor(m.body_ipos[self.torso_body], dtype=torch.float32, device=device)
@@ -178,7 +208,8 @@ class TrackingSimEnv:
         self.ep_id = torch.zeros(n, dtype=torch.long, device=device)
         self._next_ep = n
         self.max_ep_len = int(round(cfg.episode_length_s / task_cfg.dt))
-        self.prev_action = torch.zeros(n, NJ, device=device)
+        self.prev_action = torch.zeros(n, NU, device=device)
+
         self.obs_hist = torch.zeros(n, task_cfg.history, OBS_DIM, device=device)
         # Return-based reset sampling.
         nb = lib.num_bins
