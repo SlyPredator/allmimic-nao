@@ -19,7 +19,7 @@ from . import networks
 from .motion_lib import MotionLibrary
 from .networks import Critic, Policy
 from .sim_env import EnvCfg, TrackingSimEnv
-from .task import GOAL_FRAME_DIM, NJ, OBS_DIM, XI_DIM, TaskCfg
+from .task import GOAL_FRAME_DIM, NJ, NU, OBS_DIM, XI_DIM, TaskCfg
 
 
 @dataclasses.dataclass
@@ -56,7 +56,8 @@ class PPOActor(nn.Module):
     def __init__(self, obs_dim, goal_dim, init_std):
         super().__init__()
         self.mean = Policy(obs_dim, goal_dim)
-        self.std = nn.Parameter(torch.full((NJ,), init_std))
+        self.std = nn.Parameter(torch.full((NU,), init_std))
+
 
     def dist(self, obs, goal):
         mu = self.mean(obs, goal)

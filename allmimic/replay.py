@@ -13,9 +13,9 @@ from __future__ import annotations
 
 import torch
 
-from .task import NJ, flat_to_state
+from .task import NJ, NU, flat_to_state
 
-SDIM = 71
+SDIM = 13 + 2 * NJ  # 61: pos(3) + quat(4) + q(24) + v(3) + w(3) + qd(24)
 
 
 class ReplayBuffer:
@@ -24,7 +24,7 @@ class ReplayBuffer:
         self.s = torch.zeros(capacity, num_envs, SDIM, device=device)
         self.s1 = torch.zeros(capacity, num_envs, SDIM, device=device)
         self.a = torch.zeros(capacity, num_envs, NJ, device=device)
-        self.a_pi = torch.zeros(capacity, num_envs, NJ, device=device) if policy_actions else None
+        self.a_pi = torch.zeros(capacity, num_envs, NU, device=device) if policy_actions else None
         self.xi = torch.zeros(capacity, num_envs, xi_dim, device=device)
         self.frame = torch.zeros(capacity, num_envs, dtype=torch.long, device=device)
         self.ep = torch.full((capacity, num_envs), -1, dtype=torch.long, device=device)

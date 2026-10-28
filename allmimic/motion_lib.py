@@ -60,9 +60,13 @@ class MotionLibrary:
             self.root_pos = torch.tensor(a, dtype=torch.float32, device=device)
             rest = torch.tensor(b, dtype=torch.float16, device=device)
             # views into one float16 tensor; frame() casts to float32 (and renormalizes the quaternion)
-            self.root_quat, self.q, self.root_lin_vel, self.root_ang_vel, self.qd = (
-                rest[:, lo:hi] for lo, hi in REST.values()
-            )
+            # Dynamic joint count: rest is [quat(4), q(NJ), v(3), w(3), qd(NJ)] -> width is 10 + 2*NJ
+            nj = (rest.shape[1] - 10) // 2
+            self.root_quat = rest[:, 0:4]
+            self.q = rest[:, 4 : 4 + nj]
+            self.root_lin_vel = rest[:, 4 + nj : 7 + nj]
+            self.root_ang_vel = rest[:, 7 + nj : 10 + nj]
+            self.qd = rest[:, 10 + nj : 10 + 2 * nj]
         else:
             self.root_pos = torch.tensor(a[:, :3], dtype=torch.float32, device=device)
             self.root_quat = quat_normalize(torch.tensor(a[:, 3:7], dtype=torch.float32, device=device))

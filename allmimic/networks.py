@@ -27,10 +27,11 @@ def run_mlp(net, x):
 
 
 from .rotations import axis_angle_to_mat, heading_mat, mat_to_axis_angle, mm, mtm, mtv, mv, tripoint, tripoint_decode_gs
-from .task import NJ, Task
+from .task import NJ, NU, Task
 
-STATE_DELTA_DIM = 3 + 3 + 3 + 3 + NJ + NJ  # 70
-TRI_DELTA_DIM = STATE_DELTA_DIM + 6  # 76: rotation change as 9 tri-point marker coordinates instead of 3 (--wm-rot-out)
+STATE_DELTA_DIM = 3 + 3 + 3 + 3 + NJ + NJ  # 60
+TRI_DELTA_DIM = STATE_DELTA_DIM + 6  # 66: rotation change as 9 tri-point marker coordinates instead of 3 (--wm-rot-out)
+
 
 
 def mlp(inp, hidden, out, act=nn.ELU, out_gain=1.0):
@@ -158,13 +159,25 @@ def apply_delta(s, d):
     H = heading_mat(s['rot'])
     R1 = mm(s['rot'], axis_angle_to_mat(d[..., 3:6]))
     w_loc = mtv(s['rot'], s['w']) + d[..., 9:12]
+    q_next = s['q'] + d[..., 12 : 12 + NJ]
+    qd_next = s['qd'] + d[..., 12 + NJ :]
+    if NJ == 24:
+        # Project coupled HipYawPitch to their mean: Joint 2 (L) and Joint 8 (R)
+        q_hyp = 0.5 * (q_next[..., 2] + q_next[..., 8])
+        qd_hyp = 0.5 * (qd_next[..., 2] + qd_next[..., 8])
+        q_next = q_next.clone()
+        qd_next = qd_next.clone()
+        q_next[..., 2] = q_hyp
+        q_next[..., 8] = q_hyp
+        qd_next[..., 2] = qd_hyp
+        qd_next[..., 8] = qd_hyp
     return {
         'pos': s['pos'] + mv(H, d[..., 0:3]),
         'rot': R1,
         'v': s['v'] + mv(H, d[..., 6:9]),
         'w': mv(R1, w_loc),
-        'q': s['q'] + d[..., 12 : 12 + NJ],
-        'qd': s['qd'] + d[..., 12 + NJ :],
+        'q': q_next,
+        'qd': qd_next,
     }
 
 
@@ -188,13 +201,24 @@ def apply_delta_tri(s, d):
     H = heading_mat(s['rot'])
     R1 = mm(s['rot'], tripoint_decode_gs(d[..., 3:12]))
     w_loc = mtv(s['rot'], s['w']) + d[..., 15:18]
+    q_next = s['q'] + d[..., 18 : 18 + NJ]
+    qd_next = s['qd'] + d[..., 18 + NJ :]
+    if NJ == 24:
+        q_hyp = 0.5 * (q_next[..., 2] + q_next[..., 8])
+        qd_hyp = 0.5 * (qd_next[..., 2] + qd_next[..., 8])
+        q_next = q_next.clone()
+        qd_next = qd_next.clone()
+        q_next[..., 2] = q_hyp
+        q_next[..., 8] = q_hyp
+        qd_next[..., 2] = qd_hyp
+        qd_next[..., 8] = qd_hyp
     return {
         'pos': s['pos'] + mv(H, d[..., 0:3]),
         'rot': R1,
         'v': s['v'] + mv(H, d[..., 12:15]),
         'w': mv(R1, w_loc),
-        'q': s['q'] + d[..., 18 : 18 + NJ],
-        'qd': s['qd'] + d[..., 18 + NJ :],
+        'q': q_next,
+        'qd': qd_next,
     }
 
 
@@ -218,13 +242,13 @@ class Policy(nn.Module):
     """Motion encoder -> 32-d tanh latent -> shared decoder with proprioception."""
 
     def __init__(
-        self, obs_dim, goal_dim, latent=32, enc_hidden=(2048, 1024, 512, 256), dec_hidden=(2048, 1024, 512, 256)
+        self, obs_dim, goal_dim, latent=32, enc_hidden=(2048, 1024, 512, 256), dec_hidden=(2048, 1024, 512, 256), act_dim=NU
     ):
         super().__init__()
         self.obs_norm = Normalizer(obs_dim)
         self.goal_norm = Normalizer(goal_dim)
         self.encoder = mlp(goal_dim, enc_hidden, latent)
-        self.decoder = mlp(latent + obs_dim, dec_hidden, NJ, out_gain=0.01)
+        self.decoder = mlp(latent + obs_dim, dec_hidden, act_dim, out_gain=0.01)
 
     def encode(self, goal):
         return torch.tanh(run_mlp(self.encoder, self.goal_norm(goal)))
@@ -232,6 +256,28 @@ class Policy(nn.Module):
     def forward(self, obs, goal):
         z = self.encode(goal)
         return run_mlp(self.decoder, torch.cat([z, self.obs_norm(obs)], dim=-1))
+
+
+class ActionProjection(nn.Module):
+    """Linear expansion matrix P in R^(24x23) mapping 23 policy actions to 24 joint targets."""
+
+    def __init__(self, n_joints=NJ, n_actions=NU):
+        super().__init__()
+        P = torch.zeros(n_joints, n_actions)
+        for j in range(n_joints):
+            if j == 8:
+                P[8, 2] = 1.0
+            elif j > 8:
+                P[j, j - 1] = 1.0
+            else:
+                P[j, j] = 1.0
+        self.register_buffer('P', P)
+
+    def forward(self, a: torch.Tensor) -> torch.Tensor:
+        if a.shape[-1] == self.P.shape[0]:
+            return a
+        return torch.matmul(a, self.P.t())
+
 
 
 class Critic(nn.Module):
@@ -251,8 +297,16 @@ class Critic(nn.Module):
         return torch.cat([run_mlp(n, y) for n in self.net], dim=-1)
 
 
-apply_delta_c = torch.compile(apply_delta, dynamic=False)
-state_error_c = torch.compile(state_error, dynamic=False)
-state_delta_c = torch.compile(state_delta, dynamic=False)
-apply_delta_tri_c = torch.compile(apply_delta_tri, dynamic=False)
-state_delta_tri_c = torch.compile(state_delta_tri, dynamic=False)
+try:
+    import triton  # noqa: F401
+    apply_delta_c = torch.compile(apply_delta, dynamic=False)
+    state_error_c = torch.compile(state_error, dynamic=False)
+    state_delta_c = torch.compile(state_delta, dynamic=False)
+    apply_delta_tri_c = torch.compile(apply_delta_tri, dynamic=False)
+    state_delta_tri_c = torch.compile(state_delta_tri, dynamic=False)
+except Exception:
+    apply_delta_c = apply_delta
+    state_error_c = state_error
+    state_delta_c = state_delta
+    apply_delta_tri_c = apply_delta_tri
+    state_delta_tri_c = state_delta_tri

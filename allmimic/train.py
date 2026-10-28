@@ -31,12 +31,12 @@ from .networks import Critic, Policy, WorldModel, apply_delta_c, apply_delta_tri
 from .networks import state_delta_tri_c, state_error, state_error_c
 from .replay import ReplayBuffer
 from .sim_env import EnvCfg, TrackingSimEnv
-from .task import GOAL_FRAME_DIM, NJ, OBS_DIM, XI_DIM, flat_to_state, state_to_flat, task_cfg
+from .task import GOAL_FRAME_DIM, NJ, NU, OBS_DIM, XI_DIM, flat_to_state, state_to_flat, task_cfg
 
 
 @dataclasses.dataclass
 class TrainCfg:
-    motions: str = 'data/processed/lafan1_50hz.npz'
+    motions: str = 'data/processed/nao_lafan_subset_50hz.npz'
     clip_prefixes: str = ''  # e.g. "walk,run,sprint" for the Fig. 4b subset
     clip_list: str = ''  # file with one clip name per line to keep (feasible whitelist); empty = all clips
     softmax_cap: float = 0.0  # EnvCfg.softmax_cap: per-bin cap of the reset-sampling softmax, x uniform share (#19)
@@ -327,7 +327,7 @@ class Trainer:
         )
 
     def _make_buffer(self):
-        res = self.tcfg.action == 'res'
+        res = self.tcfg.action == 'res' or (NU != NJ)
         return ReplayBuffer(self.cfg.num_envs, self.cfg.buffer_steps, XI_DIM, self.device, policy_actions=res)
 
     def _extra_state(self):
@@ -468,7 +468,11 @@ class Trainer:
             return None
         from .joint_weights import JOINT_WEIGHTS
 
-        table, c = JOINT_WEIGHTS[self.cfg.wm_joint_weights], self.cfg.wm_joint_weight_clip
+        key = self.cfg.wm_joint_weights
+        if getattr(self.env.cfg, 'robot_type', '') == 'nao' or self.env.joint_names[0] in JOINT_WEIGHTS.get('nao', {}):
+            key = 'nao'
+        table = JOINT_WEIGHTS.get(key, JOINT_WEIGHTS.get(self.cfg.wm_joint_weights))
+        c = self.cfg.wm_joint_weight_clip
         w = torch.tensor([table[n] for n in self.env.joint_names], device=self.device).clamp(1 / c, c)
         w = w / w.mean()
         return torch.cat([torch.ones(12, device=self.device), w, w])
