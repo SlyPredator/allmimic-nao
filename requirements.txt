@@ -1,6 +1,7 @@
-# Python 3.11 and one or more CUDA GPUs. These are the versions every result in README.md was produced with
-# (torch from the CUDA 12.6 wheel index: pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cu126).
-torch==2.14.1
+# Python 3.10-3.12 and one or more CUDA GPUs.
+# Install PyTorch with CUDA support first:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+torch>=2.4.0
 mjlab==1.2.0
 mujoco==3.5.0
 mujoco-warp==3.5.0
@@ -14,4 +15,6 @@ trimesh
 prettytable
 tyro
 mediapy
+mink>=1.3.0       # motion retargeting QP IK
+daqp>=0.10.0      # quadratic programming solver for mink
 pytest            # tests only

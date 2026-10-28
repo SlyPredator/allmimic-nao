@@ -1,6 +1,26 @@
 __pycache__/
 *.pyc
-data/
+.pytest_cache/
+.venv/
+env/
+venv/
+
+# Data: ignore raw downloads, but track the curated 3.7MB NAO dataset
+data/*
+!data/processed/
+!data/processed/nao_lafan_subset_50hz.npz
+
+# Training outputs & logs
 runs/
+outputs/
 *.tmp
 *.tmp.npz
+
+# Generated evaluation videos (binary artifacts; re-render via scripts/visualize_clips.py)
+videos/*.mp4
+!videos/.gitkeep
+
+# IDE & system
+.vscode/
+.idea/
+*.egg-info/
