@@ -112,8 +112,14 @@ def main():
     d_goal = mujoco.MjData(m_vis)
     d_wm = mujoco.MjData(m_vis)
 
-    # Visual geom indices (group 2 is visual skin in nao_supermimic.xml)
-    vis_geoms = [i for i in range(m_vis.ngeom) if m_vis.geom_group[i] == 2]
+    # Visual geom indices for ghosts: include main body visual skin (exclude individual finger/thumb mesh clutter)
+    vis_geoms = []
+    for i in range(m_vis.ngeom):
+        if m_vis.geom_group[i] == 2:
+            mid = m_vis.geom_dataid[i]
+            mname = mujoco.mj_id2name(m_vis, mujoco.mjtObj.mjOBJ_MESH, mid) if mid >= 0 else ""
+            if "Finger" not in mname and "Thumb" not in mname:
+                vis_geoms.append(i)
 
     # Ghost appearance colors
     GOAL_RGBA = np.array([1.0, 1.0, 1.0, 0.35], dtype=np.float32)       # Semi-transparent white
@@ -286,7 +292,9 @@ def main():
                             d_goal.geom_xmat[gi],
                             GOAL_RGBA,
                         )
-                        g.dataid = m_vis.geom_dataid[gi]
+                        g.dataid = 2 * m_vis.geom_dataid[gi] if m_vis.geom_type[gi] == mujoco.mjtGeom.mjGEOM_MESH else m_vis.geom_dataid[gi]
+                        g.objtype = mujoco.mjtObj.mjOBJ_GEOM
+                        g.objid = gi
                         viewer.user_scn.ngeom += 1
 
                 # World Model ghost (blue)
@@ -303,7 +311,9 @@ def main():
                             d_wm.geom_xmat[gi],
                             WM_RGBA,
                         )
-                        g.dataid = m_vis.geom_dataid[gi]
+                        g.dataid = 2 * m_vis.geom_dataid[gi] if m_vis.geom_type[gi] == mujoco.mjtGeom.mjGEOM_MESH else m_vis.geom_dataid[gi]
+                        g.objtype = mujoco.mjtObj.mjOBJ_GEOM
+                        g.objid = gi
                         viewer.user_scn.ngeom += 1
 
             viewer.sync()
