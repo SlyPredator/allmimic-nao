@@ -1,0 +1,190 @@
+<mujoco model="SlenderDMHumanoid">
+  <compiler angle="radian" inertiafromgeom="true"/>
+  <option timestep="0.005" iterations="10" solver="Newton" gravity="0 0 -9.81"/>
+
+  <asset>
+    <!-- Blue Checkered Floor with 0.05 Reflectance -->
+    <texture name="blue_checkered" type="2d" builtin="checker" width="512" height="512" rgb1="0.22 0.38 0.65" rgb2="0.12 0.20 0.38"/>
+    <material name="floor_mat" texture="blue_checkered" texrepeat="25 25" reflectance="0.05" specular="0.3" shininess="0.2"/>
+    
+    <!-- Classic DM Control Terracotta Humanoid Material -->
+    <texture name="body_tex" type="cube" builtin="flat" mark="cross" width="128" height="128"
+             rgb1="0.82 0.50 0.28" rgb2="0.82 0.50 0.28" markrgb="1 1 1" random="0.01"/>
+    <material name="humanoid_mat" texture="body_tex" texuniform="true" rgba="0.84 0.52 0.28 1.0" specular="0.25" shininess="0.3"/>
+    <!-- Light Ivory/Beige Spherical Hands -->
+    <material name="hand_mat" rgba="0.95 0.90 0.82 1.0" specular="0.4" shininess="0.5"/>
+  </asset>
+
+  <visual>
+    <headlight ambient="0.45 0.45 0.45" diffuse="0.8 0.8 0.8" specular="0.2 0.2 0.2"/>
+    <quality shadowsize="4096"/>
+    <global azimuth="140" elevation="-22"/>
+  </visual>
+
+  <worldbody>
+    <light directional="true" pos="0 0 5.0" dir="0 0 -1" diffuse="0.85 0.85 0.85" specular="0.3 0.3 0.3" castshadow="true"/>
+    <light directional="false" pos="3.0 3.0 4.0" diffuse="0.4 0.4 0.45" specular="0.1 0.1 0.1" castshadow="false"/>
+    <light directional="false" pos="-3.0 -2.0 3.5" diffuse="0.3 0.3 0.35" specular="0.1 0.1 0.1" castshadow="false"/>
+
+    <!-- Infinite Blue Checkered Floor -->
+    <geom name="floor" type="plane" size="40 40 0.05" material="floor_mat" conaffinity="1" contype="1"/>
+
+    <!-- Root Pelvis -->
+    <body name="pelvis" pos="0 0 0.793">
+      <freejoint name="floating_base_joint"/>
+      <!-- Slender Pelvis / Butt capsule -->
+      <geom name="butt" type="capsule" fromto="-0.015 -0.065 -0.01 -0.015 0.065 -0.01" size="0.055" material="humanoid_mat"/>
+
+      <!-- LEFT LEG -->
+      <body name="left_hip_pitch_link" pos="0 0.064452 -0.1027">
+        <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+        <joint name="left_hip_pitch_joint" axis="0 1 0" range="-2.5307 2.8798"/>
+        <body name="left_hip_roll_link" pos="0 0.052 -0.030465">
+          <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+          <joint name="left_hip_roll_joint" axis="1 0 0" range="-0.5236 2.9671"/>
+          <body name="left_hip_yaw_link" pos="0.025001 0 -0.12412">
+            <joint name="left_hip_yaw_joint" axis="0 0 1" range="-2.7576 2.7576"/>
+            <!-- Slender Thigh Capsule seamlessly meeting pelvis -->
+            <geom name="left_thigh" type="capsule" fromto="-0.025 0 0.200 -0.078 0.002 -0.177" size="0.034" material="humanoid_mat"/>
+            <body name="left_knee_link" pos="-0.078273 0.0021489 -0.17734">
+              <joint name="left_knee_joint" axis="0 1 0" range="-0.087267 2.8798"/>
+              <!-- Slender Shin Capsule -->
+              <geom name="left_shin" type="capsule" fromto="0 0 0 0.0 0.0 -0.300" size="0.028" material="humanoid_mat"/>
+              <body name="left_ankle_pitch_link" pos="0 -9.4445e-05 -0.30001">
+                <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+                <joint name="left_ankle_pitch_joint" axis="0 1 0" range="-0.87267 0.5236"/>
+                <body name="left_ankle_roll_link" pos="0 0 -0.017558">
+                  <joint name="left_ankle_roll_joint" axis="1 0 0" range="-0.2618 0.2618"/>
+                  <!-- Slender Two-Toed Foot -->
+                  <geom name="left_foot_toe1" type="capsule" fromto="-0.05 0.018 -0.012 0.12 0.025 -0.012" size="0.018" material="humanoid_mat"/>
+                  <geom name="left_foot_toe2" type="capsule" fromto="-0.05 -0.005 -0.012 0.12 0.002 -0.012" size="0.018" material="humanoid_mat"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- RIGHT LEG -->
+      <body name="right_hip_pitch_link" pos="0 -0.064452 -0.1027">
+        <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+        <joint name="right_hip_pitch_joint" axis="0 1 0" range="-2.5307 2.8798"/>
+        <body name="right_hip_roll_link" pos="0 -0.052 -0.030465">
+          <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+          <joint name="right_hip_roll_joint" axis="1 0 0" range="-2.9671 0.5236"/>
+          <body name="right_hip_yaw_link" pos="0.025001 0 -0.12412">
+            <joint name="right_hip_yaw_joint" axis="0 0 1" range="-2.7576 2.7576"/>
+            <!-- Slender Thigh Capsule seamlessly meeting pelvis -->
+            <geom name="right_thigh" type="capsule" fromto="-0.025 0 0.200 -0.078 -0.002 -0.177" size="0.034" material="humanoid_mat"/>
+            <body name="right_knee_link" pos="-0.078273 -0.0021489 -0.17734">
+              <joint name="right_knee_joint" axis="0 1 0" range="-0.087267 2.8798"/>
+              <!-- Slender Shin Capsule -->
+              <geom name="right_shin" type="capsule" fromto="0 0 0 0.0 0.0 -0.300" size="0.028" material="humanoid_mat"/>
+              <body name="right_ankle_pitch_link" pos="0 9.4445e-05 -0.30001">
+                <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+                <joint name="right_ankle_pitch_joint" axis="0 1 0" range="-0.87267 0.5236"/>
+                <body name="right_ankle_roll_link" pos="0 0 -0.017558">
+                  <joint name="right_ankle_roll_joint" axis="1 0 0" range="-0.2618 0.2618"/>
+                  <!-- Slender Two-Toed Foot -->
+                  <geom name="right_foot_toe1" type="capsule" fromto="-0.05 -0.018 -0.012 0.12 -0.025 -0.012" size="0.018" material="humanoid_mat"/>
+                  <geom name="right_foot_toe2" type="capsule" fromto="-0.05 0.005 -0.012 0.12 -0.002 -0.012" size="0.018" material="humanoid_mat"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- SPINE & TORSO -->
+      <body name="waist_yaw_link" pos="0 0 0">
+        <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+        <joint name="waist_yaw_joint" axis="0 0 1" range="-2.618 2.618"/>
+        <body name="waist_roll_link" pos="-0.0039635 0 0.044">
+          <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+          <joint name="waist_roll_joint" axis="1 0 0" range="-0.52 0.52"/>
+          <body name="torso_link" pos="0 0 0">
+            <joint name="waist_pitch_joint" axis="0 1 0" range="-0.52 0.52"/>
+            <!-- Slender 3-Segment Torso -->
+            <geom name="lower_waist" type="capsule" fromto="0 -0.055 0.04 0 0.055 0.04" size="0.040" material="humanoid_mat"/>
+            <geom name="upper_waist" type="capsule" fromto="-0.008 -0.060 0.13 -0.008 0.060 0.13" size="0.044" material="humanoid_mat"/>
+            <geom name="torso" type="capsule" fromto="0 -0.075 0.22 0 0.075 0.22" size="0.048" material="humanoid_mat"/>
+            
+            <!-- Head & Neck -->
+            <body name="head" pos="0 0 0.33">
+              <geom name="neck" type="capsule" fromto="0 0 -0.08 0 0 0.01" size="0.024" material="humanoid_mat"/>
+              <geom name="head" type="sphere" pos="0 0 0.065" size="0.068" material="humanoid_mat"/>
+            </body>
+
+            <!-- LEFT ARM -->
+            <body name="left_shoulder_pitch_link" pos="0.0039563 0.10022 0.24778">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+              <joint name="left_shoulder_pitch_joint" axis="0 1 0" range="-3.0892 2.6704"/>
+              <body name="left_shoulder_roll_link" pos="0 0.038 -0.013831">
+                <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+                <joint name="left_shoulder_roll_joint" axis="1 0 0" range="-1.5882 2.2515"/>
+                <body name="left_shoulder_yaw_link" pos="0 0.00624 -0.1032">
+                  <joint name="left_shoulder_yaw_joint" axis="0 0 1" range="-2.618 2.618"/>
+                  <!-- Slender Upper Arm -->
+                  <geom name="left_upper_arm" type="capsule" fromto="0 -0.006 0.103 0.016 0 -0.08" size="0.024" material="humanoid_mat"/>
+                  <body name="left_elbow_link" pos="0.015783 0 -0.080518">
+                    <joint name="left_elbow_joint" axis="0 1 0" range="-1.0472 2.0944"/>
+                    <!-- Slender Forearm -->
+                    <geom name="left_lower_arm" type="capsule" fromto="0 0 0 0.10 0.002 -0.01" size="0.020" material="humanoid_mat"/>
+                    <body name="left_wrist_roll_link" pos="0.1 0.00188791 -0.01">
+                      <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+                      <joint name="left_wrist_roll_joint" axis="1 0 0" range="-1.9722 1.9722"/>
+                      <body name="left_wrist_pitch_link" pos="0.038 0 0">
+                        <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+                        <joint name="left_wrist_pitch_joint" axis="0 1 0" range="-1.6144 1.6144"/>
+                        <body name="left_wrist_yaw_link" pos="0.046 0 0">
+                          <joint name="left_wrist_yaw_joint" axis="0 0 1" range="-1.6144 1.6144"/>
+                          <!-- Slender Hand -->
+                          <geom name="left_hand" type="sphere" pos="0.018 0 0" size="0.025" material="hand_mat"/>
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+
+            <!-- RIGHT ARM -->
+            <body name="right_shoulder_pitch_link" pos="0.0039563 -0.10021 0.24778">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+              <joint name="right_shoulder_pitch_joint" axis="0 1 0" range="-2.6704 3.0892"/>
+              <body name="right_shoulder_roll_link" pos="0 -0.038 -0.013831">
+                <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+                <joint name="right_shoulder_roll_joint" axis="1 0 0" range="-2.2515 1.5882"/>
+                <body name="right_shoulder_yaw_link" pos="0 -0.00624 -0.1032">
+                  <joint name="right_shoulder_yaw_joint" axis="0 0 1" range="-2.618 2.618"/>
+                  <!-- Slender Upper Arm -->
+                  <geom name="right_upper_arm" type="capsule" fromto="0 0.006 0.103 0.016 0 -0.08" size="0.024" material="humanoid_mat"/>
+                  <body name="right_elbow_link" pos="0.015783 0 -0.080518">
+                    <joint name="right_elbow_joint" axis="0 1 0" range="-1.0472 2.0944"/>
+                    <!-- Slender Forearm -->
+                    <geom name="right_lower_arm" type="capsule" fromto="0 0 0 0.10 -0.002 -0.01" size="0.020" material="humanoid_mat"/>
+                    <body name="right_wrist_roll_link" pos="0.1 -0.00188791 -0.01">
+                      <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+                      <joint name="right_wrist_roll_joint" axis="1 0 0" range="-1.9722 1.9722"/>
+                      <body name="right_wrist_pitch_link" pos="0.038 0 0">
+                        <inertial pos="0 0 0" mass="0.05" diaginertia="0.0001 0.0001 0.0001"/>
+                        <joint name="right_wrist_pitch_joint" axis="0 1 0" range="-1.6144 1.6144"/>
+                        <body name="right_wrist_yaw_link" pos="0.046 0 0">
+                          <joint name="right_wrist_yaw_joint" axis="0 0 1" range="-1.6144 1.6144"/>
+                          <!-- Slender Hand -->
+                          <geom name="right_hand" type="sphere" pos="0.018 0 0" size="0.025" material="hand_mat"/>
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+
+          </body>
+        </body>
+      </body>
+
+    </body>
+  </worldbody>
+</mujoco>
