@@ -1,0 +1,239 @@
+{
+  "model": "SoftBank NAO V40 Humanoid",
+  "total_geoms": 23,
+  "stride_floats": 8,
+  "stride_bytes": 32,
+  "vert_buffer_bytes": 1379232,
+  "geoms": [
+    {
+      "geom_id": 1,
+      "body_id": 1,
+      "body_name": "torso",
+      "mesh_name": "Torso_vis",
+      "vert_byte_offset": 0,
+      "vert_count": 4900,
+      "index_byte_offset": 0,
+      "index_count": 21672
+    },
+    {
+      "geom_id": 3,
+      "body_id": 2,
+      "body_name": "Neck",
+      "mesh_name": "HeadYaw_vis",
+      "vert_byte_offset": 156800,
+      "vert_count": 8,
+      "index_byte_offset": 86688,
+      "index_count": 24
+    },
+    {
+      "geom_id": 5,
+      "body_id": 3,
+      "body_name": "Head",
+      "mesh_name": "HeadPitch_vis",
+      "vert_byte_offset": 157056,
+      "vert_count": 4976,
+      "index_byte_offset": 86784,
+      "index_count": 23535
+    },
+    {
+      "geom_id": 7,
+      "body_id": 4,
+      "body_name": "LPelvis",
+      "mesh_name": "LHipYawPitch_vis",
+      "vert_byte_offset": 316288,
+      "vert_count": 3970,
+      "index_byte_offset": 180924,
+      "index_count": 8919
+    },
+    {
+      "geom_id": 9,
+      "body_id": 5,
+      "body_name": "LHip",
+      "mesh_name": "LHipRoll_vis",
+      "vert_byte_offset": 443328,
+      "vert_count": 92,
+      "index_byte_offset": 216600,
+      "index_count": 276
+    },
+    {
+      "geom_id": 11,
+      "body_id": 6,
+      "body_name": "LThigh",
+      "mesh_name": "LHipPitch_vis",
+      "vert_byte_offset": 446272,
+      "vert_count": 1668,
+      "index_byte_offset": 217704,
+      "index_count": 6762
+    },
+    {
+      "geom_id": 13,
+      "body_id": 7,
+      "body_name": "LTibia",
+      "mesh_name": "LKneePitch_vis",
+      "vert_byte_offset": 499648,
+      "vert_count": 2634,
+      "index_byte_offset": 244752,
+      "index_count": 10245
+    },
+    {
+      "geom_id": 15,
+      "body_id": 8,
+      "body_name": "LAnklePitch",
+      "mesh_name": "LAnklePitch_vis",
+      "vert_byte_offset": 583936,
+      "vert_count": 128,
+      "index_byte_offset": 285732,
+      "index_count": 408
+    },
+    {
+      "geom_id": 17,
+      "body_id": 9,
+      "body_name": "l_ankle",
+      "mesh_name": "LAnkleRoll_vis",
+      "vert_byte_offset": 588032,
+      "vert_count": 2534,
+      "index_byte_offset": 287364,
+      "index_count": 9405
+    },
+    {
+      "geom_id": 19,
+      "body_id": 10,
+      "body_name": "RPelvis",
+      "mesh_name": "RHipYawPitch_vis",
+      "vert_byte_offset": 669120,
+      "vert_count": 3971,
+      "index_byte_offset": 324984,
+      "index_count": 8919
+    },
+    {
+      "geom_id": 21,
+      "body_id": 11,
+      "body_name": "RHip",
+      "mesh_name": "RHipRoll_vis",
+      "vert_byte_offset": 796192,
+      "vert_count": 92,
+      "index_byte_offset": 360660,
+      "index_count": 276
+    },
+    {
+      "geom_id": 23,
+      "body_id": 12,
+      "body_name": "RThigh",
+      "mesh_name": "RHipPitch_vis",
+      "vert_byte_offset": 799136,
+      "vert_count": 1668,
+      "index_byte_offset": 361764,
+      "index_count": 6762
+    },
+    {
+      "geom_id": 25,
+      "body_id": 13,
+      "body_name": "RTibia",
+      "mesh_name": "RKneePitch_vis",
+      "vert_byte_offset": 852512,
+      "vert_count": 2634,
+      "index_byte_offset": 388812,
+      "index_count": 10245
+    },
+    {
+      "geom_id": 27,
+      "body_id": 14,
+      "body_name": "RAnklePitch",
+      "mesh_name": "RAnklePitch_vis",
+      "vert_byte_offset": 936800,
+      "vert_count": 128,
+      "index_byte_offset": 429792,
+      "index_count": 408
+    },
+    {
+      "geom_id": 29,
+      "body_id": 15,
+      "body_name": "r_ankle",
+      "mesh_name": "RAnkleRoll_vis",
+      "vert_byte_offset": 940896,
+      "vert_count": 2534,
+      "index_byte_offset": 431424,
+      "index_count": 9405
+    },
+    {
+      "geom_id": 31,
+      "body_id": 16,
+      "body_name": "LShoulder",
+      "mesh_name": "LShoulderPitch_vis",
+      "vert_byte_offset": 1021984,
+      "vert_count": 169,
+      "index_byte_offset": 469044,
+      "index_count": 618
+    },
+    {
+      "geom_id": 33,
+      "body_id": 17,
+      "body_name": "LBicep",
+      "mesh_name": "LShoulderRoll_vis",
+      "vert_byte_offset": 1027392,
+      "vert_count": 2646,
+      "index_byte_offset": 471516,
+      "index_count": 12474
+    },
+    {
+      "geom_id": 35,
+      "body_id": 19,
+      "body_name": "LForeArm",
+      "mesh_name": "LElbowRoll_vis",
+      "vert_byte_offset": 1112064,
+      "vert_count": 525,
+      "index_byte_offset": 521412,
+      "index_count": 2502
+    },
+    {
+      "geom_id": 37,
+      "body_id": 20,
+      "body_name": "l_wrist",
+      "mesh_name": "LWristYaw_vis",
+      "vert_byte_offset": 1128864,
+      "vert_count": 2242,
+      "index_byte_offset": 531420,
+      "index_count": 12375
+    },
+    {
+      "geom_id": 55,
+      "body_id": 21,
+      "body_name": "RShoulder",
+      "mesh_name": "RShoulderPitch_vis",
+      "vert_byte_offset": 1200608,
+      "vert_count": 169,
+      "index_byte_offset": 580920,
+      "index_count": 618
+    },
+    {
+      "geom_id": 57,
+      "body_id": 22,
+      "body_name": "RBicep",
+      "mesh_name": "RShoulderRoll_vis",
+      "vert_byte_offset": 1206016,
+      "vert_count": 2646,
+      "index_byte_offset": 583392,
+      "index_count": 12474
+    },
+    {
+      "geom_id": 59,
+      "body_id": 24,
+      "body_name": "RForeArm",
+      "mesh_name": "RElbowRoll_vis",
+      "vert_byte_offset": 1290688,
+      "vert_count": 525,
+      "index_byte_offset": 633288,
+      "index_count": 2502
+    },
+    {
+      "geom_id": 61,
+      "body_id": 25,
+      "body_name": "r_wrist",
+      "mesh_name": "RWristYaw_vis",
+      "vert_byte_offset": 1307488,
+      "vert_count": 2242,
+      "index_byte_offset": 643296,
+      "index_count": 12375
+    }
+  ]
+}

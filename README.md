@@ -1,6 +1,6 @@
 # allmimic: a SuperMimic re-implementation
 
-<p align="center"><img src="assets/challenge_cases.gif" width="560" alt="flips, side rolls, broad jumps and other hard BONES-SEED motions"></p>
+<p align="center"><img src="assets/nao_challenge_cases.gif" width="560" alt="flips, side rolls, broad jumps and other hard BONES-SEED motions"></p>
 
 An unofficial re-implementation of **SuperMimic** (Liao et al., *SuperMimic: Scaling Humanoid Whole-Body Control
 with One Differentiable World Model*, arXiv 2610.28480) for the Unitree G1 in

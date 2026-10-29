@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>SuperMimic NAO · Live Web Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Import map for modern ES modules -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+
+  <!-- Top Pill Controls (Ghosts & Render Layers) -->
+  <header class="top-nav">
+    <div class="pill-group" role="group" aria-label="Render modes">
+      <button class="pill-btn active" id="btn-worldmodel" data-tooltip="Imagined world model state">
+        <span class="dot wm-dot"></span> World model
+      </button>
+      <button class="pill-btn active" id="btn-goal" data-tooltip="the pose it's chasing">
+        <span class="dot goal-dot"></span> Goal
+      </button>
+      <button class="pill-btn active" id="btn-mujoco" data-tooltip="Simulated physics state">
+        <span class="dot mujoco-dot"></span> MuJoCo
+      </button>
+    </div>
+    
+    <div class="top-stats">
+      <span class="stat-badge" id="fps-badge">60 FPS</span>
+      <span class="stat-badge stat-model" id="model-badge">Aldebaran NAO</span>
+    </div>
+  </header>
+
+  <!-- Bottom Timeline & Control Bar -->
+  <footer class="bottom-bar">
+    <div class="controls-panel">
+      <!-- Media Buttons -->
+      <div class="btn-cluster">
+        <button class="icon-btn" id="btn-reset" title="Reset clip (R)">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+          </svg>
+        </button>
+        <button class="icon-btn" id="btn-playpause" title="Play / Pause (Space)">
+          <svg id="icon-pause" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+          </svg>
+          <svg id="icon-play" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display: none;">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Scrubber -->
+      <div class="scrub-container">
+        <input type="range" id="timeline-slider" min="0" max="100" value="0" step="1">
+        <span class="time-readout" id="time-readout">00:00 / 00:00</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Policy Switch -->
+      <label class="toggle-control" title="Toggle active neural network policy">
+        <span class="label-text">Policy</span>
+        <div class="switch">
+          <input type="checkbox" id="policy-toggle" checked>
+          <span class="slider round"></span>
+        </div>
+      </label>
+
+      <!-- Action Noise Slider -->
+      <div class="param-slider" title="Exploration / disturbance noise standard deviation">
+        <span class="label-text">Action noise</span>
+        <input type="range" id="slider-noise" min="0" max="0.5" step="0.05" value="0.00">
+        <span class="val-text" id="val-noise">0.00</span>
+      </div>
+
+      <!-- Friction Slider -->
+      <div class="param-slider" title="Ground contact friction scale">
+        <span class="label-text">Friction</span>
+        <input type="range" id="slider-friction" min="10" max="150" step="10" value="100">
+        <span class="val-text" id="val-friction">100%</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Motion Dropdown -->
+      <div class="clip-selector-wrapper">
+        <select id="clip-select" aria-label="Select motion clip">
+          <option value="" disabled selected>Loading clips...</option>
+        </select>
+      </div>
+    </div>
+  </footer>
+
+  <!-- App Script -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
