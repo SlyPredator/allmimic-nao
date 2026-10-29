@@ -108,7 +108,7 @@ class TaskCfg:
     w_body_ang: float = 1.0
     w_root_pos: float = 0.5
     w_root_ori: float = 0.5
-    w_action_rate: float = -0.1
+    w_action_rate: float = -0.25
     w_joint_limit: float = -2.0
     w_residual: float = 0.0
     std_body_pos: float = 0.08
@@ -157,6 +157,7 @@ def task_cfg(run_cfg, train=True):
         heading=run_cfg.get('heading', 'xaxis'),
         rot_repr=run_cfg.get('rot_repr', '6d'),
         w_residual=run_cfg.get('w_residual', 0.0),
+        w_action_rate=run_cfg.get('w_action_rate', -0.25),
         **kw,
     )
 

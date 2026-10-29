@@ -138,7 +138,7 @@
                   <inertial pos="0.0254185 0.00329981 -0.0323907" quat="0.0134315 0.704735 -0.00974988 0.709276" mass="0.17185" diaginertia="0.000412968 0.000353416 8.70933e-05"/>
                   <joint name="LAnkleRoll" pos="0 0 0" axis="1 0 0" range="-0.397761 0.768992" actuatorfrcrange="-3.348 3.348"/>
                   <geom type="mesh" mesh="LAnkleRoll_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
-                  <geom type="mesh" mesh="LAnkleRoll_010" name="l_foot" friction="0.9 0.01 0.01" condim="3" group="3"/>
+                  <geom type="mesh" mesh="LAnkleRoll_010" name="l_foot" friction="1.2 0.01 0.01" condim="3" group="3"/>
                   <site name="l_sole" pos="0 0 -0.04511"/>
                   <!-- SuperMimic Tracking Site: Left Ankle / Sole Track -->
                   <site name="l_ankle_track" pos="0 0 -0.04511"/>
@@ -180,7 +180,7 @@
                   <inertial pos="0.0254185 -0.00329981 -0.0323907" quat="-0.0138289 0.70447 0.00894779 0.709543" mass="0.17185" diaginertia="0.000412252 0.000352536 8.69609e-05"/>
                   <joint name="RAnkleRoll" pos="0 0 0" axis="1 0 0" range="-0.768992 0.397761" actuatorfrcrange="-3.348 3.348"/>
                   <geom type="mesh" mesh="RAnkleRoll_vis" material="nao_skin" group="2" contype="0" conaffinity="0"/>
-                  <geom type="mesh" mesh="RAnkleRoll_010" name="r_foot" friction="0.9 0.01 0.01" condim="3" group="3"/>
+                  <geom type="mesh" mesh="RAnkleRoll_010" name="r_foot" friction="1.2 0.01 0.01" condim="3" group="3"/>
                   <site name="r_sole" pos="0 0 -0.04511"/>
                   <!-- SuperMimic Tracking Site: Right Ankle / Sole Track -->
                   <site name="r_ankle_track" pos="0 0 -0.04511"/>

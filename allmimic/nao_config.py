@@ -10,8 +10,10 @@ from mjlab.actuator import BuiltinPositionActuatorCfg, DelayedActuatorCfg
 
 NAO_SUPERMIMIC_XML = Path(__file__).resolve().parent.parent / "assets" / "nao" / "nao_supermimic.xml"
 
-# Per-subsystem action scales (0.25 for lower body balance, 0.35 for upper body gestures)
+# Per-subsystem action scales
 NAO_ACTION_SCALE = {
+    r'.*HipRoll.*': 0.30,
+    r'.*AnkleRoll.*': 0.28,
     r'.*Hip.*': 0.25,
     r'.*Knee.*': 0.25,
     r'.*Ankle.*': 0.25,
@@ -55,7 +57,7 @@ FULL_COLLISION = CollisionCfg(
     geom_names_expr=(_foot_regex, _torso_regex),
     condim={_foot_regex: 3, _torso_regex: 1},
     priority={_foot_regex: 1, _torso_regex: 0},
-    friction={_foot_regex: (0.9,)},
+    friction={_foot_regex: (1.2,)},
     contype=1,
     conaffinity=0,
     disable_other_geoms=True,
@@ -72,15 +74,15 @@ NAO_ACTUATOR_CFGS = (
     ),
     BuiltinPositionActuatorCfg(
         target_names_expr=(r".*Knee.*",),
-        stiffness=10.0,
-        damping=5.0,
+        stiffness=18.0,
+        damping=4.0,
         effort_limit=5.0,
         armature=0.005,
     ),
     BuiltinPositionActuatorCfg(
         target_names_expr=(r".*Ankle.*",),
-        stiffness=2.0,
-        damping=0.1,
+        stiffness=12.0,
+        damping=1.5,
         effort_limit=5.0,
         armature=0.005,
     ),

@@ -77,6 +77,7 @@ class TrainCfg:
     # #26 (experimental): query the WM only where it was fit, and measure when that fails
     clean_prev_action: bool = False  # the obs' last action and the action-rate term use the pre-noise action
     w_residual: float = 0.0  # TaskCfg.w_residual: reward x sum of squared residual outputs (e.g. -0.02)
+    w_action_rate: float = -0.25  # TaskCfg.w_action_rate: penalty on (a_t - a_{t-1})^2 action chatter
     retire_g: float = 0.0  # EnvCfg.retire_g: down-weight bins whose return stays below this (unlearnable tail)
     bptt_detach: int = 0  # > 0: detach the imagined state chain every k steps (truncated BPTT; J / critic unchanged)
     gap_every: int = 0  # > 0: imagination-gap monitor every k iterations (deterministic policy, sim vs WM)
