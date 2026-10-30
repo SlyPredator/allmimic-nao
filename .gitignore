@@ -9,6 +9,9 @@ venv/
 data/*
 !data/processed/
 !data/processed/nao_lafan_subset_50hz.npz
+reference_motions/data_lafan1/
+reference_motions/data_bones_seed/
+reference_motions/*.parquet
 
 # Training outputs & logs
 runs/
