@@ -46,15 +46,23 @@ web_dep/
 
 ## Quickstart
 
-### 1. Export Model & Motions (Already Done for `nao_walk_forward`)
-To re-export or update from any checkpoint:
+### 1. Export Model & Motions (Already Done for `nao_full2`)
+To re-export model weights and closed-loop MuJoCo policy rollouts from any checkpoint:
 
 ```bash
 conda activate supermimic_nao
+
+# 1. Export ONNX policy & configuration
 python web_dep/scripts/export_web_assets.py \
-    --run runs/nao_walk_forward \
+    --run runs/nao_full2 \
     --out-dir web_dep/public \
-    --num-clips 5
+    --num-clips 12
+
+# 2. Simulate closed-loop rollouts for the visualizer
+python web_dep/scripts/simulate_policy_rollouts.py \
+    --run runs/nao_full2 \
+    --clips 12 \
+    --out web_dep/public
 ```
 
 ### 2. Launch Local Visualizer

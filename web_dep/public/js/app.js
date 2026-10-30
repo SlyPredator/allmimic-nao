@@ -315,28 +315,32 @@ function animate() {
 
   if (clip && meshesSolid.length > 0) {
     const f = state.currentFrame;
+    const simPos = clip.sim_geom_pos || clip.geom_pos;
+    const simQuat = clip.sim_geom_quat || clip.geom_quat;
+    const goalPos = clip.goal_geom_pos || clip.geom_pos;
+    const goalQuat = clip.goal_geom_quat || clip.geom_quat;
 
     // 1. MuJoCo / Physical robot pose driven by the actual trained policy in closed-loop
-    if (state.showMujoco && clip.sim_geom_pos) {
+    if (state.showMujoco && simPos) {
       rootSolid.visible = true;
-      applyGeomPoses(meshesSolid, clip.sim_geom_pos[f], clip.sim_geom_quat[f], state.actionNoise);
+      applyGeomPoses(meshesSolid, simPos[f], simQuat[f], state.actionNoise);
     } else {
       rootSolid.visible = false;
     }
 
     // 2. Goal ghost pose (The target reference pose it's tracking)
-    if (state.showGoal && clip.goal_geom_pos) {
+    if (state.showGoal && goalPos) {
       rootGoal.visible = true;
-      applyGeomPoses(meshesGoal, clip.goal_geom_pos[f], clip.goal_geom_quat[f], 0.0);
+      applyGeomPoses(meshesGoal, goalPos[f], goalQuat[f], 0.0);
     } else {
       rootGoal.visible = false;
     }
 
     // 3. World Model ghost pose (Predictive imagination phantom ahead in time)
-    if (state.showWorldModel && clip.sim_geom_pos) {
+    if (state.showWorldModel && simPos) {
       rootWm.visible = true;
       const wmFrame = Math.min(clip.length - 1, f + 4);
-      applyGeomPoses(meshesWm, clip.sim_geom_pos[wmFrame], clip.sim_geom_quat[wmFrame], 0.0);
+      applyGeomPoses(meshesWm, simPos[wmFrame], simQuat[wmFrame], 0.0);
     } else {
       rootWm.visible = false;
     }

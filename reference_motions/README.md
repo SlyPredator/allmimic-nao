@@ -6,7 +6,7 @@ This folder contains a **kinematically verified stick-figure humanoid** and an i
 
 ## 1. All 40 LAFAN1 Mocap Clips
 
-All 40 raw clips are stored under `representation/data_lafan1/g1/`:
+All 40 raw clips are stored under `reference_motions/data_lafan1/g1/`:
 
 | Index | Category | Clips |
 | :---: | :--- | :--- |
@@ -24,18 +24,18 @@ All 40 raw clips are stored under `representation/data_lafan1/g1/`:
 Launch the animator:
 
 ```bash
-python representation/animate_lafan1.py
+python reference_motions/animate_lafan1.py
 ```
 
 ### Jump to specific clips directly:
 ```bash
 # By name:
-python representation/animate_lafan1.py --clip fallAndGetUp1_subject1
-python representation/animate_lafan1.py --clip run1_subject2
-python representation/animate_lafan1.py --clip dance2_subject1
+python reference_motions/animate_lafan1.py --clip fallAndGetUp1_subject1
+python reference_motions/animate_lafan1.py --clip run1_subject2
+python reference_motions/animate_lafan1.py --clip dance2_subject1
 
 # By index (0 - 39):
-python representation/animate_lafan1.py --clip 8
+python reference_motions/animate_lafan1.py --clip 8
 ```
 
 ---

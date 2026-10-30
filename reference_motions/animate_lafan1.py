@@ -4,9 +4,9 @@ Uses a minimalist, research-paper stick-figure kinematic humanoid (cylindrical c
 glossy spherical joints, clean studio lighting, soft floor reflections).
 
 Usage:
-    python representation/animate_lafan1.py
-    python representation/animate_lafan1.py --clip walk1_subject1
-    python representation/animate_lafan1.py --clip 8  # fallAndGetUp1_subject1
+    python reference_motions/animate_lafan1.py
+    python reference_motions/animate_lafan1.py --clip walk1_subject1
+    python reference_motions/animate_lafan1.py --clip 8  # fallAndGetUp1_subject1
 """
 
 from __future__ import annotations

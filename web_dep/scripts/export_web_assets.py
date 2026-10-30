@@ -206,6 +206,8 @@ def export_assets(run_path: str, motions_path: str, out_dir: str, num_clips_expo
                 "fps": 50,
                 "geom_pos": clip_geom_pos,
                 "geom_quat": clip_geom_quat,
+                "sim_geom_pos": clip_geom_pos,
+                "goal_geom_pos": clip_geom_pos,
                 "root_pos": clip_root_pos_th,
             })
 
